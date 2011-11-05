@@ -1,8 +1,10 @@
-Provided Abstracts
-------------------
-* **Edp\Common\Model** A base class for models which provides fromArray() and
-  fromConfig() static methods, useful for constructing models from database
-  result sets. It also converts underscored field names such as `user_id` to
-  camel-cased property names such as `userId`.
-* **Edp\Common\DbMapper** A base class for model mappers that allows for easy
+Provided Classes
+----------------
+* **`Zend\Db\Adapter\DiPdoMysql`** - An extended version of the PDO MySQL
+  adapter for Zend\Db which allows for injecting an existing PDO instance in a
+  DI-friendly way.
+* **`EdpCommon\Mapper\DbMapperAbstract`** - An abstract mapper for Zend\Db that
+  allows for different read and write DB connections (master/slave). 
+* **`EdpCommon\Model\ModelAbstract`** - An abstract model class with factory
+  methods for instantiating from an associative array (database result). 
   separation of read and write queries to master/slave adapters.
