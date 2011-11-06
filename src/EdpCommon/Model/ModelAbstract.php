@@ -7,6 +7,7 @@ use Zend\Stdlib\IsAssocArray,
 
 abstract class ModelAbstract
 {
+    protected $exts = array();
     const ARRAYSET_PRESERVE_KEYS    = 0;
     const ARRAYSET_RESET_KEYS       = 1;
 
@@ -62,5 +63,16 @@ abstract class ModelAbstract
             }
         }
         return $return;
+    }
+
+    public function ext($extension, $value = null)
+    {
+        if (null !== $value) {
+            $this->exts[$extension] = $value;
+        }
+        if (!isset($this->exts[$extension])) {
+            return null;
+        } 
+        return $this->exts[$extension];
     }
 }
