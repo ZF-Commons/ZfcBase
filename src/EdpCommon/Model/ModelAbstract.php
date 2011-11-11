@@ -26,8 +26,8 @@ abstract class ModelAbstract
         $classMethods = get_class_methods(get_called_class());
         $model = new static();
         foreach ($array as $key => $value) {
-            $setter = 'set' . implode('',array_map('ucfirst',explode('_',strtolower($key))));
-            if (in_array($setter, $classMethods)) {
+            $setter = static::fieldToSetterMethod($key);
+            if (is_callable(array($model, $setter))) {
                 $model->$setter($value);
             }
         }
@@ -74,5 +74,43 @@ abstract class ModelAbstract
             return null;
         } 
         return $this->exts[$extension];
+    }
+    
+    /**
+     * Convert a model class to an array recursively 
+     * 
+     * @param mixed $array 
+     * @return array
+     */
+    public function toArray($array = false)
+    {
+        $array = $array ?: get_object_vars($this);
+        foreach ($array as $key => $value) {
+            unset($array[$key]);
+            $key = $this->fromCamelCase($key);
+            if (is_object($value)) {
+                $array[$key] = $value->toArray();
+            } elseif (is_array($value) && count($value) > 0) {
+                $array[$key] = $this->toArray($value);
+            } elseif ($value !== NULL && !is_array($value)) {
+                $array[$key] = $value;
+            }
+        }
+        return $array;
+    }
+
+    public static function fieldToSetterMethod($name)
+    {
+        return 'set' . static::toCamelCase($name);
+    }
+
+    public static function toCamelCase($name)
+    {
+        return implode('',array_map('ucfirst', explode('_',$name)));
+    }
+
+    private function fromCamelCase($name)
+    {
+        return trim(preg_replace_callback('/([A-Z])/', function($c){ return '_'.strtolower($c[1]); }, $name),'_');
     }
 }
