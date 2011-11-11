@@ -87,7 +87,11 @@ abstract class ModelAbstract
         $array = $array ?: get_object_vars($this);
         foreach ($array as $key => $value) {
             unset($array[$key]);
-            $key = $this->fromCamelCase($key);
+            $key = static::fromCamelCase($key);
+            $getter = static::fieldToGetterMethod($key);
+            if (is_callable($this, $getter)) {
+                $value = $this->$getter();
+            }
             if (is_object($value)) {
                 $array[$key] = $value->toArray();
             } elseif (is_array($value) && count($value) > 0) {
@@ -104,12 +108,17 @@ abstract class ModelAbstract
         return 'set' . static::toCamelCase($name);
     }
 
+    public static function fieldToGetterMethod($name)
+    {
+        return 'get' . static::toCamelCase($name);
+    }
+
     public static function toCamelCase($name)
     {
         return implode('',array_map('ucfirst', explode('_',$name)));
     }
 
-    private function fromCamelCase($name)
+    public static function fromCamelCase($name)
     {
         return trim(preg_replace_callback('/([A-Z])/', function($c){ return '_'.strtolower($c[1]); }, $name),'_');
     }
