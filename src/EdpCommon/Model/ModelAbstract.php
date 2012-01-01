@@ -2,8 +2,7 @@
 
 namespace EdpCommon\Model;
 
-use Zend\Stdlib\IsAssocArray,
-    Zend\Config\Config;
+use Zend\Stdlib\IsAssocArray;
 
 abstract class ModelAbstract
 {
