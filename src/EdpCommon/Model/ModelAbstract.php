@@ -35,17 +35,6 @@ abstract class ModelAbstract
     }
 
     /**
-     * Convert an instance of Zend\Config\Config to an instance of a model class
-     * 
-     * @param Config $config 
-     * @return Edp\Common\Model
-     */
-    public static function fromConfig(Config $config)
-    {
-        return static::fromArray($config->toArray());
-    }
-
-    /**
      * Convert an array of arrays into an array of model classes
      * 
      * @param array $array 
