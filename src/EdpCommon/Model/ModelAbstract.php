@@ -77,11 +77,15 @@ abstract class ModelAbstract
             unset($array[$key]);
             $key = static::fromCamelCase($key);
             $getter = static::fieldToGetterMethod($key);
-            if (is_callable($this, $getter)) {
+            if (is_callable(array($this, $getter))) {
                 $value = $this->$getter();
             }
             if (is_object($value)) {
-                $array[$key] = $value->toArray();
+                if (is_callable(array($value, 'toArray'))) {
+                    $array[$key] = $value->toArray();
+                } else {
+                    $array[$key] = $value;
+                }
             } elseif (is_array($value) && count($value) > 0) {
                 $array[$key] = $this->toArray($value);
             } elseif ($value !== NULL && !is_array($value)) {
