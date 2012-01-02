@@ -77,7 +77,7 @@ abstract class ModelAbstract
             unset($array[$key]);
             $key = static::fromCamelCase($key);
             $getter = static::fieldToGetterMethod($key);
-            if (is_callable($this, $getter)) {
+            if (is_callable(array($this, $getter))) {
                 $value = $this->$getter();
             }
             if (is_object($value)) {
