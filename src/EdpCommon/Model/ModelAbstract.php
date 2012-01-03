@@ -2,7 +2,8 @@
 
 namespace EdpCommon\Model;
 
-use Zend\Stdlib\IsAssocArray;
+use Zend\Stdlib\IsAssocArray,
+    DateTime;
 
 abstract class ModelAbstract
 {
@@ -83,6 +84,8 @@ abstract class ModelAbstract
             if (is_object($value)) {
                 if (is_callable(array($value, 'toArray'))) {
                     $array[$key] = $value->toArray();
+                } elseif ($value instanceof DateTime) {
+                    $array[$key] = $value->format('Y-m-d H:i:s'); // meh...
                 } else {
                     $array[$key] = $value;
                 }
