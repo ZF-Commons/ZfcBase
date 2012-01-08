@@ -1,6 +1,6 @@
 <?php
 
-namespace EdpCommon\Util;
+namespace ZfcBase\Util;
 
 use COM;
 

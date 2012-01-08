@@ -1,6 +1,6 @@
 <?php
 
-namespace EdpCommon\Form;
+namespace ZfcBase\Form;
 
 use Zend\Form\Form,
     Zend\EventManager\EventCollection,

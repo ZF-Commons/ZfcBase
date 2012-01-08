@@ -1,6 +1,6 @@
 <?php
 
-namespace EdpCommon\Model;
+namespace ZfcBase\Model;
 
 use Zend\Stdlib\IsAssocArray,
     DateTime;

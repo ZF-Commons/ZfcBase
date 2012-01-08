@@ -1,6 +1,6 @@
 <?php
 
-namespace EdpCommon\EventManager;
+namespace ZfcBase\EventManager;
 
 use Zend\EventManager\EventCollection,
     Zend\EventManager\EventManager;

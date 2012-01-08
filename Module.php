@@ -1,6 +1,6 @@
 <?php
 
-namespace EdpCommon;
+namespace ZfcBase;
 
 use Zend\Module\Consumer\AutoloaderProvider;
 

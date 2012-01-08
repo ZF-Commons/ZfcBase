@@ -1,9 +1,9 @@
 <?php
 
-namespace EdpCommon\Mapper;
+namespace ZfcBase\Mapper;
 
 use Zend\Db\Adapter\AbstractAdapter,
-    EdpCommon\EventManager\EventProvider,
+    ZfcBase\EventManager\EventProvider,
     Traversable;
 
 abstract class DbMapperAbstract extends EventProvider
