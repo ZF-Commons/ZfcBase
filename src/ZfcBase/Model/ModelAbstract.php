@@ -12,16 +12,16 @@ abstract class ModelAbstract
     const ARRAYSET_RESET_KEYS       = 1;
 
     /**
-     * Convert an array to an instance of a model class 
-     * 
-     * @param array $array 
-     * @return Edp\Common\Model
+     * Convert an array to an instance of a model class
+     *
+     * @param array $array
+     * @return ZfcBase\Model\ModelAbstract
      */
     public static function fromArray($array)
     {
         if (!IsAssocArray::test($array)) {
             return false;
-            //throw new \Exception('Error: Edp\Common\Model::fromArray expects associative array.');
+            //throw new \Exception('Error: ZfcBase\Model\ModelAbstract::fromArray expects associative array.');
         }
         $classMethods = get_class_methods(get_called_class());
         $model = new static();
@@ -36,8 +36,8 @@ abstract class ModelAbstract
 
     /**
      * Convert an array of arrays into an array of model classes
-     * 
-     * @param array $array 
+     *
+     * @param array $array
      * @param int $mode
      * @return array
      */
@@ -61,14 +61,14 @@ abstract class ModelAbstract
         }
         if (!isset($this->exts[$extension])) {
             return null;
-        } 
+        }
         return $this->exts[$extension];
     }
-    
+
     /**
-     * Convert a model class to an array recursively 
-     * 
-     * @param mixed $array 
+     * Convert a model class to an array recursively
+     *
+     * @param mixed $array
      * @return array
      */
     public function toArray($array = false)

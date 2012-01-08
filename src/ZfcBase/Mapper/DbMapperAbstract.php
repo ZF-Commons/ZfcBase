@@ -23,8 +23,8 @@ abstract class DbMapperAbstract extends EventProvider
     protected $writeAdapter;
 
     /**
-     * The name of the table 
-     * 
+     * The name of the table
+     *
      * @var string
      */
     protected $tableName;
@@ -95,12 +95,12 @@ abstract class DbMapperAbstract extends EventProvider
     {
         return $this->tableName;
     }
- 
+
     /**
      * Set tableName.
      *
      * @param $tableName the value to be set
-     * @return Edp\Common\DbMapper
+     * @return ZfcBase\Mapper\DbMapperAbstract
      */
     public function setTableName($tableName)
     {
