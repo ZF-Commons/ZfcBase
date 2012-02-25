@@ -2,25 +2,20 @@
 
 namespace ZfcBase\Mapper;
 
-use Zend\Db\Adapter\AbstractAdapter,
+use Zend\Db\Adapter\Adapter,
+    Zend\Db\TableGateway\TableGatewayInterface,
+    Zend\Db\TableGateway\TableGateway,
     ZfcBase\EventManager\EventProvider,
     Traversable;
 
 abstract class DbMapperAbstract extends EventProvider
 {
     /**
-     * Database adapter for read queries
+     * Database adapter for queries
      *
-     * @var Zend\Db\Adapter\AbstractAdapter
+     * @var Adapter
      */
-    protected $readAdapter;
-
-    /**
-     * Database adapter for write queries
-     *
-     * @var Zend\Db\Adapter\AbstractAdapter
-     */
-    protected $writeAdapter;
+    protected $adapter;
 
     /**
      * The name of the table
@@ -30,60 +25,64 @@ abstract class DbMapperAbstract extends EventProvider
     protected $tableName;
 
     /**
+     * tableGateway 
+     * 
+     * @var TableGatewayInterface
+     */
+    protected $tableGateway;
+
+    /**
      * Default database adapter
      *
-     * @var Zend\Db\Adapter\AbstractAdapter
+     * @var Adapter
      */
     protected static $defaultAdapter;
 
     /**
      * Constructor
      *
-     * @param Zend\Db\Adapter\AbstractAdapter $writeAdapter
-     * @param Zend\Db\Adapter\AbstractAdapter $readAdapter
+     * @param Adapter $adapter
      *
      * @throws \Exception If there is no adapter defined
      *
      * @return void
      */
-    final public function __construct(AbstractAdapter $writeAdapter = null, AbstractAdapter $readAdapter = null)
+    final public function __construct(Adapter $adapter = null)
     {
-        if (null === $writeAdapter) {
-            if (null === ($writeAdapter = self::getDefaultAdapter())) {
+        if (null === $adapter) {
+            if (null === ($adapter = self::getDefaultAdapter())) {
                 throw new \Exception('No database adapters defined');
             }
         }
 
-        if (null === $readAdapter) {
-            $readAdapter = $writeAdapter;
-        }
-
-        $this->readAdapter = $readAdapter;
-        $this->writeAdapter = $writeAdapter;
+        $this->adapter = $adapter;
 
         $this->init();
     }
 
     public function init() {}
 
+
     /**
-     * Get the database adapter for read queries
-     *
-     * @return Zend\Db\Adapter\AbstractAdapter
+     * Set the database adapter for queries 
+     * 
+     * @param Adapter $adapter 
+     * @return DbMapperAbstract
      */
-    public function getReadAdapter()
+    public function setAdapter(Adapter $adapter)
     {
-        return $this->readAdapter;
+        $this->adapter = $adapter;
+        return $this;
     }
 
     /**
-     * Get the database adapter for write queries
+     * Get the database adapter for queries
      *
-     * @return Zend\Db\Adapter\AbstractAdapter
+     * @return Adapter
      */
-    public function getWriteAdapter()
+    public function getAdapter()
     {
-        return $this->writeAdapter;
+        return $this->adapter;
     }
 
     /**
@@ -100,7 +99,7 @@ abstract class DbMapperAbstract extends EventProvider
      * Set tableName.
      *
      * @param $tableName the value to be set
-     * @return ZfcBase\Mapper\DbMapperAbstract
+     * @return DbMapperAbstract
      */
     public function setTableName($tableName)
     {
@@ -109,12 +108,37 @@ abstract class DbMapperAbstract extends EventProvider
     }
 
     /**
+     * Get tableGateway.
+     *
+     * @return TabeleGatewayInterface
+     */
+    public function getTableGateway()
+    {
+        if (null === $this->tableGateway && null !== $this->getTableName()) {
+            $this->setTableGateway(new TableGateway($this->getTableName(), $this->getAdapter()));
+
+        }
+        return $this->tableGateway;
+    }
+ 
+    /**
+     * Set tableGateway.
+     *
+     * @param TableGatewayInterface $tableGateway
+     */
+    public function setTableGateway(TableGatewayInterface $tableGateway)
+    {
+        $this->tableGateway = $tableGateway;
+        return $this;
+    }
+
+    /**
      * Set the default database adapter
      *
-     * @param Zend\Db\Adapter\AbstractAdapter
+     * @param Adapter
      * @return void
      */
-    public static function setDefaultAdapter(AbstractAdapter $adapter)
+    public static function setDefaultAdapter(Adapter $adapter)
     {
         self::$defaultAdapter = $adapter;
     }
@@ -122,7 +146,7 @@ abstract class DbMapperAbstract extends EventProvider
     /**
      * Get the default database adapter
      *
-     * @return Zend\Db\Adapter\AbstractAdapter
+     * @return Adapter
      */
     public static function getDefaultAdapter()
     {
