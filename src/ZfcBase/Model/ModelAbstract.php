@@ -2,8 +2,8 @@
 
 namespace ZfcBase\Model;
 
-use Zend\Stdlib\IsAssocArray,
-    DateTime;
+use DateTime,
+    Traversable;
 
 abstract class ModelAbstract
 {
@@ -19,10 +19,9 @@ abstract class ModelAbstract
      */
     public static function fromArray($array)
     {
-        if (!IsAssocArray::test($array)) {
+        if (!is_array($array) && !$array instanceof Traversable) {
             return false;
-            //throw new \Exception('Error: ZfcBase\Model\ModelAbstract::fromArray expects associative array.');
-        }
+        } 
         $classMethods = get_class_methods(get_called_class());
         $model = new static();
         foreach ($array as $key => $value) {
