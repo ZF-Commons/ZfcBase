@@ -3,9 +3,10 @@
 namespace ZfcBase\Model;
 
 use Zend\Stdlib\ArrayUtils,
+    Zend\Db\ResultSet\RowObjectInterface,
     DateTime;
 
-abstract class ModelAbstract implements \Zend\Db\ResultSet\RowObjectInterface
+abstract class ModelAbstract implements RowObjectInterface
 {
     protected $ext = array();
     const ARRAYSET_PRESERVE_KEYS    = 0;
@@ -85,8 +86,7 @@ abstract class ModelAbstract implements \Zend\Db\ResultSet\RowObjectInterface
             if (is_object($value)) {
                 if (is_callable(array($value, 'toArray'))) {
                     $array[$key] = $value->toArray();
-                }
-                else {
+                } else {
                     $array[$key] = $this->toArrayObject($value);
                 }
             } elseif (is_array($value) && count($value) > 0) {

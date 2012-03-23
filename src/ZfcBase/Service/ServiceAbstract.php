@@ -3,9 +3,9 @@
 namespace ZfcBase\Service;
 
 use Zend\Loader\LocatorAware,
-        Zend\Di\Locator,
-        Zend\EventManager\EventCollection,
-       Zend\EventManager\EventManager;
+    Zend\Di\Locator,
+    Zend\EventManager\EventCollection,
+    Zend\EventManager\EventManager;
 
 
 class ServiceAbstract implements LocatorAware {
@@ -14,6 +14,14 @@ class ServiceAbstract implements LocatorAware {
      */
     protected $locator;
     
+    /**
+     * Method merges return values of each listener's response into original $argv array and returns it.
+     * 
+     * @param string $event
+     * @param array $argv
+     * @param callback $callback
+     * @return array 
+     */
     protected function triggerParamsMergeEvent($event, $argv = array(), $callback = null) {
         $eventRet = $this->triggerEvent($event, $argv, $callback);
         foreach($eventRet as $event) {
@@ -37,7 +45,7 @@ class ServiceAbstract implements LocatorAware {
         return $this->locator;
     }
     
-    //Zend/EventManager/ProvidesEvents trait
+    //--- Zend/EventManager/ProvidesEvents trait - let's wait for 5.4
     /**
      * @var EventCollection
      */
@@ -87,6 +95,6 @@ class ServiceAbstract implements LocatorAware {
         
     }
     
-    //END
+    //--- END trait
     
 }

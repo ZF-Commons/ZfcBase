@@ -80,11 +80,11 @@ abstract class ModuleAbstract implements AutoloaderProvider, LocatorRegistered
         $options = $this->getOptions();
         $optionArr = explode('.', $option);
         
-        $option = $this->_getOption($options, $optionArr, $default, $option);
+        $option = $this->getOptionFromArray($options, $optionArr, $default, $option);
         return $option;
     }
     
-    private function _getOption(array $options, array $option, $default, $origOption) {
+    private function getOptionFromArray(array $options, array $option, $default, $origOption) {
         $currOption = array_shift($option);
         if(array_key_exists($currOption, $options)) {
             if(count($option) >= 1) {
