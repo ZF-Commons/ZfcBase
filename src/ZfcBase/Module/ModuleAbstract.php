@@ -12,6 +12,8 @@ use Zend\Module\Manager,
 
 abstract class ModuleAbstract implements AutoloaderProvider, LocatorRegistered
 {
+    protected $mergedConfig;
+    
     abstract public function getDir();
     abstract public function getNamespace();
     
@@ -21,6 +23,7 @@ abstract class ModuleAbstract implements AutoloaderProvider, LocatorRegistered
         $instance = $this;//TODO this will no be needed in PHP 5.4
         $events->attach('bootstrap', 'bootstrap', function($e) use ($instance, $moduleManager) {
             $app = $e->getParam('application');
+            $instance->setMergedConfig($e->getParam('config'));
             $instance->bootstrap($moduleManager, $app);
         });
     }
@@ -46,6 +49,22 @@ abstract class ModuleAbstract implements AutoloaderProvider, LocatorRegistered
     public function getConfig()
     {
         return include $this->getDir() . '/config/module.config.php';
+    }
+    
+    public function getMergedConfig() {
+        return $this->mergedConfig;
+    }
+    
+    public function setMergedConfig($mergedConfig) {
+        $this->mergedConfig = $mergedConfig;
+    }
+    
+    public function getOptions() {
+        $config = $this->getMergedConfig();
+        if(empty($config[$this->getNamespace()]['options'])) {
+            return array();
+        }
+        return $config[$this->getNamespace()]['options'];
     }
     
     /**
@@ -85,7 +104,7 @@ abstract class ModuleAbstract implements AutoloaderProvider, LocatorRegistered
         return $option;
     }
     
-    private function getOptionFromArray(array $options, array $option, $default, $origOption) {
+    private function getOptionFromArray($options, array $option, $default, $origOption) {
         $currOption = array_shift($option);
         if(array_key_exists($currOption, $options)) {
             if(count($option) >= 1) {
@@ -102,11 +121,4 @@ abstract class ModuleAbstract implements AutoloaderProvider, LocatorRegistered
         throw new InvalidArgumentException("Option '$origOption' is not set");
     }
     
-    public function getOptions() {
-        $config = $this->getConfig();
-        if(empty($config[$this->getNamespace()]['options'])) {
-            return array();
-        }
-        return $config[$this->getNamespace()]['options'];
-    }
 }
