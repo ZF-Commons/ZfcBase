@@ -3,10 +3,9 @@
 namespace ZfcBase\Model;
 
 use Zend\Stdlib\ArrayUtils,
-    Zend\Db\ResultSet\RowObjectInterface,
     DateTime;
 
-abstract class ModelAbstract implements RowObjectInterface
+abstract class ModelAbstract
 {
     protected $exts = array();
     const ARRAYSET_PRESERVE_KEYS    = 0;
