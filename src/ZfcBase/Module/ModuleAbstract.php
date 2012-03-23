@@ -7,7 +7,8 @@ use Zend\Module\Manager,
     Zend\EventManager\StaticEventManager,
     Zend\Module\Consumer\AutoloaderProvider,
     Zend\Module\Consumer\LocatorRegistered,
-    Zend\EventManager\EventDescription as Event;
+    Zend\EventManager\EventDescription as Event,
+    InvalidArgumentException;
 
 abstract class ModuleAbstract implements AutoloaderProvider, LocatorRegistered
 {
@@ -88,7 +89,7 @@ abstract class ModuleAbstract implements AutoloaderProvider, LocatorRegistered
         $currOption = array_shift($option);
         if(array_key_exists($currOption, $options)) {
             if(count($option) >= 1) {
-                return $this->_getOption($options[$currOption], $option, $default, $origOption);
+                return $this->getOptionFromArray($options[$currOption], $option, $default, $origOption);
             }
             
             return $options[$currOption];
@@ -98,7 +99,7 @@ abstract class ModuleAbstract implements AutoloaderProvider, LocatorRegistered
             return $default;
         }
         
-        throw new \InvalidArgumentException("Option '$origOption' is not set");
+        throw new InvalidArgumentException("Option '$origOption' is not set");
     }
     
     public function getOptions() {
