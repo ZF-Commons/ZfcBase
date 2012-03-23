@@ -3,11 +3,12 @@
 namespace ZfcBase\Model;
 
 use Zend\Stdlib\ArrayUtils,
+    Zend\Db\ResultSet\RowObjectInterface,
     DateTime,
     InvalidArgumentException,
     ArrayAccess;
 
-abstract class ModelAbstract implements ArrayAccess
+abstract class ModelAbstract implements ArrayAccess, RowObjectInterface
 {
     protected $exts = array();
     const ARRAYSET_PRESERVE_KEYS    = 0;
@@ -60,6 +61,11 @@ abstract class ModelAbstract implements ArrayAccess
         return $this->exts[$extension];
     }
 
+    //matuszemi: we keep both interfaces for now - Zend\Db\ResultSet\RowObjectInterface
+    public function setRowData(array $array) {
+        $this->exchangeArray($array);
+    }
+    
     public function exchangeArray($array) {
         foreach ($array as $key => $value) {
             $setter = static::fieldToSetterMethod($key);
@@ -68,6 +74,7 @@ abstract class ModelAbstract implements ArrayAccess
             }
         }
     }
+    //END
     
     /**
      * Convert a model class to an array recursively
@@ -100,9 +107,10 @@ abstract class ModelAbstract implements ArrayAccess
     }
     
     protected function toArrayObject($value) {
-        if($value instanceof DateTime) {
-            return $value->format('Y-m-d H:i:s'); // meh...
-        }
+        //matuszemi: we do not convert objects to string - considering toStringValueArray()
+//        if($value instanceof DateTime) {
+//            return $value->format('Y-m-d H:i:s'); // meh...
+//        }
         
         return $value;
     }
