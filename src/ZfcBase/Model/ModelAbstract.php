@@ -8,7 +8,7 @@ use Zend\Stdlib\ArrayUtils,
 
 abstract class ModelAbstract implements RowObjectInterface
 {
-    protected $ext = array();
+    protected $exts = array();
     const ARRAYSET_PRESERVE_KEYS    = 0;
     const ARRAYSET_RESET_KEYS       = 1;
 
@@ -51,12 +51,12 @@ abstract class ModelAbstract implements RowObjectInterface
     public function ext($extension, $value = null)
     {
         if (null !== $value) {
-            $this->ext[$extension] = $value;
+            $this->exts[$extension] = $value;
         }
-        if (!isset($this->ext[$extension])) {
+        if (!isset($this->exts[$extension])) {
             return null;
         }
-        return $this->ext[$extension];
+        return $this->exts[$extension];
     }
 
     public function exchangeArray($array) {
@@ -108,7 +108,7 @@ abstract class ModelAbstract implements RowObjectInterface
     
     public function count() {
         $vars = get_object_vars($this);
-        unset($vars['ext']);
+        unset($vars['exts']);
         return count($vars);
     }
     
