@@ -4,9 +4,10 @@ namespace ZfcBase\Model;
 
 use Zend\Stdlib\ArrayUtils,
     DateTime,
-    InvalidArgumentException;
+    InvalidArgumentException,
+    ArrayAccess;
 
-abstract class ModelAbstract
+abstract class ModelAbstract implements ArrayAccess
 {
     protected $exts = array();
     const ARRAYSET_PRESERVE_KEYS    = 0;
