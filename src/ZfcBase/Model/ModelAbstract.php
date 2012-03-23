@@ -3,7 +3,8 @@
 namespace ZfcBase\Model;
 
 use Zend\Stdlib\ArrayUtils,
-    DateTime;
+    DateTime,
+    InvalidArgumentException;
 
 abstract class ModelAbstract
 {
