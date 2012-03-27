@@ -106,7 +106,9 @@ abstract class ModuleAbstract implements AutoloaderProvider, LocatorRegistered
     
     private function getOptionFromArray($options, array $option, $default, $origOption) {
         $currOption = array_shift($option);
-        if(array_key_exists($currOption, $options)) {
+        //we need this fix to accept both array/ZendConfig -- there is know problem with offsetExists() in PHP
+        //if(array_key_exists($currOption, $options)) {
+        if(array_key_exists($currOption, $options) || ($options instanceof \Zend\Config\Config && $options->offsetExists($currOption))) {
             if(count($option) >= 1) {
                 return $this->getOptionFromArray($options[$currOption], $option, $default, $origOption);
             }
