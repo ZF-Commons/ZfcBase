@@ -18,7 +18,7 @@ class ModelServiceAbstract extends ServiceAbstract {
     
     /**
      * @param array $data
-     * @return type 
+     * @return array 
      */
     public function persist(array $data) {
         $mapper = $this->getMapper();
@@ -43,10 +43,11 @@ class ModelServiceAbstract extends ServiceAbstract {
                 $mapper->commit();
             }
             
-        } catch(Exception $e) {
+        } catch(\Exception $e) {
             if($mapper instanceof Transactional) {
                 $mapper->rollback();
             }
+            throw $e;
         }
         
         return $params;
@@ -115,10 +116,11 @@ class ModelServiceAbstract extends ServiceAbstract {
                 $mapper->commit();
             }
             
-        } catch(Exception $e) {
+        } catch(\Exception $e) {
             if($mapper instanceof Transactional) {
                 $mapper->rollback();
             }
+            throw $e;
         }
         
         return $params;
