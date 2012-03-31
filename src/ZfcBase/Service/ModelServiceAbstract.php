@@ -43,7 +43,7 @@ class ModelServiceAbstract extends ServiceAbstract {
                 $mapper->commit();
             }
             
-        } catch(Exception $e) {
+        } catch(\Exception $e) {
             if($mapper instanceof Transactional) {
                 $mapper->rollback();
             }
@@ -116,7 +116,7 @@ class ModelServiceAbstract extends ServiceAbstract {
                 $mapper->commit();
             }
             
-        } catch(Exception $e) {
+        } catch(\Exception $e) {
             if($mapper instanceof Transactional) {
                 $mapper->rollback();
             }
