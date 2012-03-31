@@ -1,10 +1,9 @@
 <?php
 
-namespace KapitchiBase\Form;
+namespace ZfcBase\Form;
 
-use Zend\Form\SubForm,
-    Zend\EventManager\EventCollection,
-    Zend\EventManager\EventManager;
+use Zend\Form\Form as ZendForm,
+    Zend\Form\SubForm;
 
 class Form extends ProvidesEventsForm {
     
