@@ -59,12 +59,12 @@ abstract class ModuleAbstract implements AutoloaderProvider, LocatorRegistered
         $this->mergedConfig = $mergedConfig;
     }
     
-    public function getOptions() {
+    public function getOptions($namespace = 'options') {
         $config = $this->getMergedConfig();
-        if(empty($config[$this->getNamespace()]['options'])) {
+        if(empty($config[$this->getNamespace()][$namespace])) {
             return array();
         }
-        return $config[$this->getNamespace()]['options'];
+        return $config[$this->getNamespace()][$namespace]->toArray();
     }
     
     /**
@@ -96,8 +96,8 @@ abstract class ModuleAbstract implements AutoloaderProvider, LocatorRegistered
      * @param mixed $default
      * @return mixed 
      */
-    public function getOption($option, $default = null) {
-        $options = $this->getOptions();
+    public function getOption($option, $default = null, $namespace = 'options') {
+        $options = $this->getOptions($namespace);
         $optionArr = explode('.', $option);
         
         $option = $this->getOptionFromArray($options, $optionArr, $default, $option);
