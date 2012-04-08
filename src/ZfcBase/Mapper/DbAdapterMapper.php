@@ -57,10 +57,18 @@ abstract class DbAdapterMapper implements Transactional, AdapterAwareInterface {
         if(is_object($values)) {
             if(is_callable(array($values, 'toScalarValueArray'))) {
                 return $values->toScalarValueArray();
-            }
-            
-            if(is_callable(array($values, 'toArray'))) {
+            } elseif (is_callable(array($values, 'getArrayCopy'))) {
+                $values = $values->getArrayCopy();
+            } elseif (is_callable(array($values, 'toArray'))) {
                 $values = $values->toArray();
+            } elseif ($values instanceof \Traversable) {
+                $v = array();
+                foreach ($values as $key => $value) {
+                    $v[$key] = $value;
+                }
+                $values = $v;
+            } else {
+                $values = get_object_vars($values);
             }
         }
         
