@@ -39,4 +39,14 @@ class String
         }
         return $data;
     }
+    
+    public static function toCamelCase($name)
+    {
+        return implode('',array_map('ucfirst', explode('_',$name)));
+    }
+
+    public static function fromCamelCase($name)
+    {
+        return trim(preg_replace_callback('/([A-Z])/', function($c){ return '_'.strtolower($c[1]); }, $name),'_');
+    }
 }

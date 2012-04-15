@@ -6,7 +6,8 @@ use Zend\Stdlib\ArrayUtils,
     Zend\Db\ResultSet\RowObjectInterface,
     DateTime,
     InvalidArgumentException,
-    ArrayAccess;
+    ArrayAccess,
+    ZfcBase\Util\String;
 
 abstract class ModelAbstract implements ArrayAccess, RowObjectInterface
 {
@@ -154,21 +155,12 @@ abstract class ModelAbstract implements ArrayAccess, RowObjectInterface
     
     public static function fieldToSetterMethod($name)
     {
-        return 'set' . static::toCamelCase($name);
+        return 'set' . String::toCamelCase($name);
     }
 
     public static function fieldToGetterMethod($name)
     {
-        return 'get' . static::toCamelCase($name);
+        return 'get' . String::toCamelCase($name);
     }
 
-    public static function toCamelCase($name)
-    {
-        return implode('',array_map('ucfirst', explode('_',$name)));
-    }
-
-    public static function fromCamelCase($name)
-    {
-        return trim(preg_replace_callback('/([A-Z])/', function($c){ return '_'.strtolower($c[1]); }, $name),'_');
-    }
 }
