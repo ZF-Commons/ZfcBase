@@ -8,7 +8,7 @@ use Zend\Db\Adapter\Adapter,
     InvalidArgumentException as CannotConvertToScalarException,
     InvalidArgumentException as NotArrayException;
 
-abstract class DbAdapterMapper implements Transactional, AdapterAwareInterface {
+abstract class DbAdapterMapper implements TransactionalInterface, AdapterAwareInterface {
     /**
      * @var array
      */
