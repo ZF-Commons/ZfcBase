@@ -2,15 +2,15 @@
 
 namespace ZfcBase\Service;
 
-use     Zend\Loader\LocatorAware,
-        Zend\Di\Locator,
-        Zend\EventManager\EventCollection,
-        Zend\EventManager\EventManager,
-        Zend\Paginator\Paginator,
-        ZfcBase\Model\ModelAbstract,
-        ZfcBase\Mapper\ModelMapper,
-        ZfcBase\Mapper\Transactional,
-        ZfcBase\Service\Exception\ModelNotFoundException;
+use Zend\Loader\LocatorAware,
+    Zend\Di\Locator,
+    Zend\EventManager\EventCollection,
+    Zend\EventManager\EventManager,
+    Zend\Paginator\Paginator,
+    ZfcBase\Model\ModelAbstract,
+    ZfcBase\Mapper\ModelMapperInterface,
+    ZfcBase\Mapper\TransactionalInterface as Transactional,
+    ZfcBase\Service\Exception\ModelNotFoundException;
 
 class ModelServiceAbstract extends ServiceAbstract {
     protected $mapper;
@@ -155,11 +155,13 @@ class ModelServiceAbstract extends ServiceAbstract {
         $this->modelPrototype = $modelPrototype;
     }
 
-    public function setMapper(ModelMapper $mapper) {
+    public function setMapper(ModelMapperInterface $mapper) {
         $this->mapper = $mapper;
     }
     
     public function getMapper() {
+        //let mapper 'inherit' service's model prototype
+        $this->mapper->setModelPrototype($this->getModelPrototype());
         return $this->mapper;
     }
     

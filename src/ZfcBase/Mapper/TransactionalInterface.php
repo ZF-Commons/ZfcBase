@@ -2,7 +2,7 @@
 
 namespace ZfcBase\Mapper;
 
-interface Transactional {
+interface TransactionalInterface {
     public function beginTransaction();
     public function commit();
     public function rollback();
