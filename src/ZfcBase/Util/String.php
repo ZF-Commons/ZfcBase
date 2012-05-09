@@ -29,7 +29,7 @@ class String
         } elseif (class_exists('COM')) {
             try {
                 $capi = new COM('CAPICOM.Utilities.1');
-                $data = $capi->GetRandom($btyeLength,0);
+                $data = $capi->GetRandom($byteLength,0);
             } catch (\Exception $ex) {} // Fail silently
         }
         if(empty($data)) {
