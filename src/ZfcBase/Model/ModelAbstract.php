@@ -62,8 +62,10 @@ abstract class ModelAbstract implements ArrayAccess, RowObjectInterface
         return $this->exts[$extension];
     }
 
-    //matuszemi: we keep both interfaces for now - Zend\Db\ResultSet\RowObjectInterface
-    public function setRowData(array $array) {
+    /**
+     * Support for Zend\Db\ResultSet\RowObjectInterface
+     */
+    public function populate(array $array) {
         $this->exchangeArray($array);
     }
     
@@ -75,7 +77,6 @@ abstract class ModelAbstract implements ArrayAccess, RowObjectInterface
             }
         }
     }
-    //END
     
     /**
      * Convert a model class to an array recursively

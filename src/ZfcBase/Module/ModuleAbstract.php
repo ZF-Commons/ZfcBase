@@ -3,7 +3,7 @@
 namespace ZfcBase\Module;
 
 use Zend\Module\Manager,
-    Zend\Mvc\AppContext as Application,
+    Zend\Mvc\ApplicationInterface,
     Zend\EventManager\StaticEventManager,
     Zend\Module\Consumer\AutoloaderProvider,
     Zend\Module\Consumer\LocatorRegistered,
@@ -19,7 +19,7 @@ abstract class ModuleAbstract implements AutoloaderProvider, LocatorRegistered
     
     public function init(Manager $moduleManager)
     {
-        $events = StaticEventManager::getInstance();
+        $events = $moduleManager->events()->getSharedManager();
         $instance = $this;//TODO this will no be needed in PHP 5.4
         $events->attach('bootstrap', 'bootstrap', function($e) use ($instance, $moduleManager) {
             $app = $e->getParam('application');
@@ -28,7 +28,7 @@ abstract class ModuleAbstract implements AutoloaderProvider, LocatorRegistered
         });
     }
     
-    public function bootstrap(Manager $moduleManager, Application $app) {
+    public function bootstrap(Manager $moduleManager, ApplicationInterface $app) {
         
     }
     
