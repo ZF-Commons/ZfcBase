@@ -3,10 +3,11 @@
 namespace ZfcBase\Service;
 
 use Zend\Loader\LocatorAware,
+    Zend\EventManager\EventManagerAwareInterface,
     Zend\Di\LocatorInterface,
     Zend\EventManager\EventManagerInterface;
 
-class ServiceAbstract implements LocatorAware {
+class ServiceAbstract implements LocatorAware, EventManagerAwareInterface {
     /**
      * @var EventManagerInterface
      */
