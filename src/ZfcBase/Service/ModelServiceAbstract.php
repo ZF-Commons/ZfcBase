@@ -2,11 +2,7 @@
 
 namespace ZfcBase\Service;
 
-use Zend\Loader\LocatorAware,
-    Zend\Di\Locator,
-    Zend\EventManager\EventCollection,
-    Zend\EventManager\EventManager,
-    Zend\Paginator\Paginator,
+use Zend\Paginator\Paginator,
     ZfcBase\Model\ModelAbstract,
     ZfcBase\Mapper\ModelMapperInterface,
     ZfcBase\Mapper\TransactionalInterface as Transactional,
@@ -17,6 +13,8 @@ class ModelServiceAbstract extends ServiceAbstract {
     protected $modelPrototype;
     
     /**
+     * Returns: array('model' => $model)
+     * 
      * @param array $data
      * @return array 
      */
@@ -34,7 +32,7 @@ class ModelServiceAbstract extends ServiceAbstract {
                 'model' => $model,
             ));
 
-            $ret = $mapper->persist($model);
+            $mapper->persist($model);
             $params['model'] = $model;
 
             $params = $this->triggerParamsMergeEvent('persist.post', $params);
@@ -106,7 +104,7 @@ class ModelServiceAbstract extends ServiceAbstract {
                 'model' => $model
             ));
 
-            $ret = $mapper->remove($model);
+            $mapper->remove($model);
             $params['model'] = $model;
 
             $params = $this->triggerParamsMergeEvent('remove.post', $params);
