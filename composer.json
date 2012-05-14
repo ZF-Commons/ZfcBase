@@ -1,0 +1,30 @@
+{
+    "name": "zf-commons/ZfcBase",
+    "description": "A set of genetic (abstract) classes which are commonly used across multiple modules.",
+    "type": "library",
+    "keywords": [
+        "zf2"
+    ],
+    "homepage": "https://github.com/ZF-Commons/ZfcBase",
+    "authors": [
+        {
+            "name": "Evan Coury",
+            "email": "me@evancoury.com",
+            "homepage": "http://blog.evan.pro/"
+        },
+        {
+            "name": "Kyle Spraggs",
+            "email": "theman@spiffyjr.me",
+            "homepage": "http://www.spiffyjr.me/"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.3",
+        "zendframework/zendframework": "dev-master",
+    },
+    "autoload": {
+        "classmap": [
+            "./"
+        ]
+    }
+}
