@@ -138,7 +138,7 @@ abstract class DbAdapterMapper implements TransactionalInterface, AdapterAwareIn
             return $obj->__toString();
         }
         if ($obj instanceof \DateTime) {
-            return $obj->format('Y-m-d\TH:i:sP');
+            return $obj->format('Y-m-d\TH:i:s');
         }
         
         throw new CannotConvertToScalarException("Can not convert object '" . get_class($obj) . "' to string");
