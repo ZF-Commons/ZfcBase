@@ -2,22 +2,24 @@
 
 namespace ZfcBase\Module;
 
-use Zend\Module\Manager,
-    Zend\Mvc\ApplicationInterface,
-    Zend\EventManager\StaticEventManager,
-    Zend\Module\Consumer\AutoloaderProvider,
-    Zend\Module\Consumer\LocatorRegistered,
-    Zend\EventManager\EventDescription as Event,
-    InvalidArgumentException;
+use InvalidArgumentException;
+use Zend\EventManager\EventDescription as Event;
+use Zend\EventManager\StaticEventManager;
+use Zend\ModuleManager\Feature\AutoloaderProviderInterface;
+use Zend\ModuleManager\Feature\LocatorRegisteredInterface;
+use Zend\ModuleManager\ModuleManager;
+use Zend\Mvc\ApplicationInterface;
 
-abstract class ModuleAbstract implements AutoloaderProvider, LocatorRegistered
+abstract class ModuleAbstract implements 
+    AutoloaderProviderInterface, 
+    LocatorRegisteredInterface
 {
     protected $mergedConfig;
     
     abstract public function getDir();
     abstract public function getNamespace();
     
-    public function init(Manager $moduleManager)
+    public function init(ModuleManager $moduleManager)
     {
         $events = $moduleManager->events()->getSharedManager();
         $instance = $this;//TODO this will no be needed in PHP 5.4
@@ -28,7 +30,7 @@ abstract class ModuleAbstract implements AutoloaderProvider, LocatorRegistered
         });
     }
     
-    public function bootstrap(Manager $moduleManager, ApplicationInterface $app) {
+    public function bootstrap(ModuleManager $moduleManager, ApplicationInterface $app) {
         
     }
     
