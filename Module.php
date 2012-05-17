@@ -2,9 +2,9 @@
 
 namespace ZfcBase;
 
-use Zend\Module\Consumer\AutoloaderProvider;
+use Zend\ModuleManager\Feature\AutoloaderProviderInterface;
 
-class Module implements AutoloaderProvider
+class Module implements AutoloaderProviderInterface
 {
     public function getAutoloaderConfig()
     {
