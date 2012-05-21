@@ -2,27 +2,27 @@
 
 namespace ZfcBase\Service;
 
-use Zend\Loader\LocatorAware,
+use Zend\ServiceManager\ServiceLocatorAwareInterface,
+    Zend\ServiceManager\ServiceLocatorInterface,
     Zend\EventManager\EventManagerAwareInterface,
-    Zend\Di\LocatorInterface,
     Zend\EventManager\EventManagerInterface;
 
-class ServiceAbstract implements LocatorAware, EventManagerAwareInterface {
+class ServiceAbstract implements ServiceLocatorAwareInterface, EventManagerAwareInterface {
     /**
      * @var EventManagerInterface
      */
     protected $events;
     
     /**
-     * @var Zend\Loader\Locator;
+     * @var Zend\ServiceManager\ServiceManagerInterface;
      */
     protected $locator;
     
-    public function setLocator(LocatorInterface $locator) {
+    public function setServiceLocator(ServiceLocatorInterface $locator) {
         $this->locator = $locator;
     }
     
-    public function getLocator() {
+    public function getServiceLocator() {
         return $this->locator;
     }
     
@@ -49,9 +49,6 @@ class ServiceAbstract implements LocatorAware, EventManagerAwareInterface {
      */
     public function events()
     {
-        if (!$this->events instanceof EventManagerInterface) {
-            $this->setEventManager(new EventManager());
-        }
         return $this->events;
     }
     
