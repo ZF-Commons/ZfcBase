@@ -35,7 +35,7 @@ class ProvidesEventsForm extends Form
     public function events()
     {
         if (!$this->events instanceof EventManagerInterface) {
-            $identifiers = array(__CLASS__, get_class($this));
+            $identifiers = array(__CLASS__, get_called_class());
             if (isset($this->eventIdentifier)) {
                 if ((is_string($this->eventIdentifier))
                     || (is_array($this->eventIdentifier))

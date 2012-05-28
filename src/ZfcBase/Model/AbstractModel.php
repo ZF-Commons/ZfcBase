@@ -9,7 +9,7 @@ use Zend\Stdlib\ArrayUtils,
     ArrayAccess,
     ZfcBase\Util\String;
 
-abstract class ModelAbstract implements ArrayAccess, RowObjectInterface
+abstract class AbstractModel implements ArrayAccess, RowObjectInterface
 {
     protected $exts = array();
     const ARRAYSET_PRESERVE_KEYS    = 0;
@@ -19,12 +19,12 @@ abstract class ModelAbstract implements ArrayAccess, RowObjectInterface
      * Convert an array to an instance of a model class
      *
      * @param array $array
-     * @return ZfcBase\Model\ModelAbstract
+     * @return AbstractModel
      */
     public static function fromArray($array)
     {
         if (!ArrayUtils::hasStringKeys($array)) {
-            throw new InvalidArgumentException('ModelAbstract::fromArray() expects associative array.');
+            throw new InvalidArgumentException('AbstractModel::fromArray() expects associative array.');
         }
         $model = new static();
         $model->exchangeArray($array);

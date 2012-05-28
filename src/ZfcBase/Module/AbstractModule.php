@@ -3,14 +3,14 @@
 namespace ZfcBase\Module;
 
 use InvalidArgumentException;
-use Zend\EventManager\EventDescription as Event;
+use Zend\EventManager\EventInterface as Event;
 use Zend\EventManager\StaticEventManager;
 use Zend\ModuleManager\Feature\AutoloaderProviderInterface;
 use Zend\ModuleManager\Feature\LocatorRegisteredInterface;
 use Zend\ModuleManager\ModuleManager;
 use Zend\Mvc\ApplicationInterface;
 
-abstract class ModuleAbstract implements 
+abstract class AbstractModule implements
     AutoloaderProviderInterface, 
     LocatorRegisteredInterface
 {
