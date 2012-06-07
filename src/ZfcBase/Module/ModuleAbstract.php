@@ -25,7 +25,7 @@ abstract class ModuleAbstract implements
         $instance = $this;//TODO this will no be needed in PHP 5.4
         $events->attach('application', 'bootstrap', function($e) use ($instance, $moduleManager) {
             $app = $e->getParam('application');
-            $instance->setMergedConfig($e->getParam('config'));
+            $instance->setMergedConfig($app->getConfiguration());
             $instance->bootstrap($moduleManager, $app);
         });
     }
