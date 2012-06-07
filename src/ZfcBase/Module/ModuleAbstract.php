@@ -66,7 +66,12 @@ abstract class ModuleAbstract implements
         if(empty($config[$this->getNamespace()][$namespace])) {
             return array();
         }
-        return $config[$this->getNamespace()][$namespace]->toArray();
+
+        if (is_array($config[$this->getNamespace()][$namespace])) {
+            return $config[$this->getNamespace()][$namespace];
+        } else {
+            return $config[$this->getNamespace()][$namespace]->toArray();
+        }
     }
     
     /**
