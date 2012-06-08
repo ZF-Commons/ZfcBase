@@ -2,8 +2,9 @@
 
 namespace ZfcBase\EventManager;
 
-use Zend\EventManager\EventManagerInterface,
-    Zend\EventManager\EventManager;
+use Traversable;
+use Zend\EventManager\EventManagerInterface;
+use Zend\EventManager\EventManager;
 
 abstract class EventProvider
 {
@@ -20,7 +21,7 @@ abstract class EventProvider
      */
     public function setEventManager(EventManagerInterface $events)
     {
-        $identifiers = array(__CLASS__, get_class($this));
+        $identifiers = array(__CLASS__, get_called_class());
         if (isset($this->eventIdentifier)) {
             if ((is_string($this->eventIdentifier))
                 || (is_array($this->eventIdentifier))

@@ -27,9 +27,9 @@ Provided Classes
   adapter for Zend\Db which allows for injecting an existing PDO instance in a
   DI-friendly way. Under the Zend namespae simply so I don't forget that this is
   simply a hack until the Zend\Db refactoring is complete.
-* `ZfcBase\Mapper\DbMapperAbstract` - An abstract mapper for Zend\Db that
+* `ZfcBase\Mapper\AbstractDbMapper` - An abstract mapper for Zend\Db that
   allows for different read and write DB connections (master/slave).
-* `ZfcBase\Model\ModelAbstract` - An abstract model class with factory
+* `ZfcBase\Model\AbstractModel` - An abstract model class with factory
   methods for instantiating from an associative array (database result).
 * `ZfcBase\Form\ProvidesEventsForm` - Extends Zend\Form and provides the
   functionality of `ZfcBase\EventManager\EventProvider` (basically it's a

@@ -2,13 +2,12 @@
 
 namespace ZfcBase\Mapper;
 
-use Zend\Db\Adapter\Adapter,
-    Zend\Db\Adapter\AdapterAwareInterface,
-    Zend\Db\TableGateway\TableGateway,
-    Zend\Db\Sql\Select,
-    Zend\Db\ResultSet\ResultSet,
-    InvalidArgumentException as CannotConvertToScalarException,
-    InvalidArgumentException as NotArrayException;
+use Traversable;
+use Zend\Db\Adapter\Adapter;
+use Zend\Db\Adapter\AdapterAwareInterface;
+use Zend\Db\TableGateway\TableGateway;
+use Zend\Db\Sql\Select;
+use Zend\Db\ResultSet\ResultSet;
 
 abstract class DbAdapterMapper implements TransactionalInterface, AdapterAwareInterface
 {
@@ -96,7 +95,7 @@ abstract class DbAdapterMapper implements TransactionalInterface, AdapterAwareIn
                 $values = $values->getArrayCopy();
             } elseif (is_callable(array($values, 'toArray'))) {
                 $values = $values->toArray();
-            } elseif ($values instanceof \Traversable) {
+            } elseif ($values instanceof Traversable) {
                 $v = array();
                 foreach ($values as $key => $value) {
                     $v[$key] = $value;
@@ -108,7 +107,7 @@ abstract class DbAdapterMapper implements TransactionalInterface, AdapterAwareIn
         }
         
         if (!is_array($values)) {
-            throw new NotArrayException("Parameter is not an array");
+            throw new Exception\InvalidArgumentException("Parameter is not an array");
         }
         
         $ret = array();
@@ -126,7 +125,7 @@ abstract class DbAdapterMapper implements TransactionalInterface, AdapterAwareIn
                 continue;
             }
             
-            throw new CannotConvertToScalarException("Can not convert '$key' key value to string");
+            throw new Exception\InvalidArgumentException("Can not convert '$key' key value to string");
         }
         
         return $ret;
@@ -141,7 +140,7 @@ abstract class DbAdapterMapper implements TransactionalInterface, AdapterAwareIn
             return $obj->format('Y-m-d\TH:i:s');
         }
         
-        throw new CannotConvertToScalarException("Can not convert object '" . get_class($obj) . "' to string");
+        throw new Exception\InvalidArgumentException("Can not convert object '" . get_class($obj) . "' to string");
     }
     
     // Implement Transactional

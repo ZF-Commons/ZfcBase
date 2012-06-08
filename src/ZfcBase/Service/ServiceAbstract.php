@@ -2,6 +2,7 @@
 
 namespace ZfcBase\Service;
 
+use Traversable;
 use Zend\ServiceManager\ServiceLocatorAwareInterface,
     Zend\ServiceManager\ServiceLocatorInterface,
     Zend\EventManager\EventManagerAwareInterface,
@@ -14,7 +15,7 @@ class ServiceAbstract implements ServiceLocatorAwareInterface, EventManagerAware
     protected $events;
     
     /**
-     * @var Zend\ServiceManager\ServiceManagerInterface;
+     * @var ServiceLocatorInterface
      */
     protected $locator;
     
@@ -34,7 +35,7 @@ class ServiceAbstract implements ServiceLocatorAwareInterface, EventManagerAware
      */
     public function setEventManager(EventManagerInterface $events)
     {
-        $events->setIdentifiers(array(__CLASS__, get_class($this)));
+        $events->setIdentifiers(array(__CLASS__, get_called_class()));
         $this->events = $events;
         $this->attachDefaultListeners();
         return $this;

@@ -3,7 +3,7 @@
 namespace ZfcBase\Service;
 
 use Zend\Paginator\Paginator,
-    ZfcBase\Model\ModelAbstract,
+    ZfcBase\Model\AbstractModel,
     ZfcBase\Mapper\ModelMapperInterface,
     ZfcBase\Mapper\TransactionalInterface as Transactional,
     ZfcBase\Service\Exception\ModelNotFoundException;
@@ -149,7 +149,7 @@ class ModelServiceAbstract extends ServiceAbstract {
         return clone $this->modelPrototype;
     }
 
-    public function setModelPrototype(ModelAbstract $modelPrototype) {
+    public function setModelPrototype(AbstractModel $modelPrototype) {
         $this->modelPrototype = $modelPrototype;
     }
 
