@@ -8,10 +8,9 @@ use Zend\Db\TableGateway\TableGatewayInterface;
 use Zend\Db\TableGateway\AbstractTableGateway;
 use Zend\Db\TableGateway\TableGateway;
 use ZfcBase\EventManager\EventProvider;
-use ZfcBase\Model\AbstractModel;
 use ZfcUser\Module as ZfcUser;
 
-abstract class AbstractDbMapper extends EventProvider implements DataMapperInterface
+abstract class AbstractDbMapper extends EventProvider
 {
     /**
      * tableGateway 
