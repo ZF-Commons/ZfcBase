@@ -1,6 +1,6 @@
 <?php
 
-namespace ZfcBase\Mapper\Exception;
+namespace ZfcBase\Persistence\Exception;
 
 class RuntimeException extends \RuntimeException implements ExceptionInterface
 {}
