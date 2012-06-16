@@ -51,6 +51,7 @@ abstract class AbstractDefaultTableGatewayManager extends EventProvider implemen
     public function setTableGateway(AbstractTableGateway $tableGateway)
     {
         $this->tableGateway = $tableGateway;
+        return $this;
     }
 
     /**
@@ -67,6 +68,7 @@ abstract class AbstractDefaultTableGatewayManager extends EventProvider implemen
     public function setHydrator(HydratorInterface $hydrator)
     {
         $this->hydrator = $hydrator;
+        return $this;
     }
 
     /**
