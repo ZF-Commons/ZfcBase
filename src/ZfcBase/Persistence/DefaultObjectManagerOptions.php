@@ -22,6 +22,11 @@ class DefaultObjectManagerOptions extends Options
     protected $className;
 
     /**
+     * @var array
+     */
+    protected $map;
+
+    /**
      * @param string $className
      */
     public function setClassName($className)
@@ -68,4 +73,22 @@ class DefaultObjectManagerOptions extends Options
     {
         return $this->tableName;
     }
+
+    /**
+     * @param array $map
+     */
+    public function setMap(array $map)
+    {
+        $this->map = $map;
+    }
+
+    /**
+     * @return array
+     */
+    public function getMap()
+    {
+        return $this->map;
+    }
+
+
 }
