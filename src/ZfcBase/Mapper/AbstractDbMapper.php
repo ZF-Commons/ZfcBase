@@ -156,16 +156,24 @@ abstract class AbstractDbMapper implements
         $pk = $this->getPrimaryKey();
         $hydrator = $this->getHydrator();
         $set = $hydrator->extract($entity);
-        $pkValue = $set[$pk];
-        unset($set[$pk]);
+
+        $pkField = $this->getHydrator()->getFieldForProperty($pk);
+        $pkValue = $set[$pkField];
+        unset($set[$pkField]);
 
         $sql = new Sql($this->getDbAdapter(), $this->getTableName());
         $update = $sql->update();
         $update->set($set);
-        $update->where(array($pk => $pkValue));
+        $update->where(array($pkField => $pkValue));
 
         $statement = $sql->prepareStatementForSqlObject($update);
-        $result = $statement->execute();
+        var_dump($statement->getSql());
+        try {
+            $result = $statement->execute();
+
+        } catch (\Exception $e) {
+            var_dump($e->getMessage());
+        }
 
         return $result->getAffectedRows();
     }
