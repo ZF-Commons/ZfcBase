@@ -35,7 +35,9 @@ class MappingHydrator implements HydratorInterface
         foreach ($this->map as $propertyName => $field) {
             switch ($field['type']) {
                 case 'string':
+                case 'int':
                 case 'integer':
+                case 'float':
                     $value = $this->extractField($object, $propertyName);
                     break;
                 case 'datetime':
@@ -70,11 +72,17 @@ class MappingHydrator implements HydratorInterface
                 if ($field === $fieldInfo['name']) {
                     switch ($fieldInfo['type']) {
                         case 'string':
+                        case 'int':
                         case 'integer':
+                        case 'float':
                             $this->pushField($object, $propertyName, $value);
                             break;
                         case 'datetime':
-                            $this->pushField($object, $propertyName, new DateTime($value));
+                            if (null === $value) {
+                                $this->pushField($object, $propertyName, null);
+                            } else {
+                                $this->pushField($object, $propertyName, new DateTime($value));
+                            }
                             break;
                         case 'bool':
                         case 'boolean':

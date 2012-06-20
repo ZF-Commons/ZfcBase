@@ -8,5 +8,5 @@ interface ObjectManagerInterface
 
     public function remove($object);
 
-    public function flush();
+    public function flush($object = null, array $options = array());
 }

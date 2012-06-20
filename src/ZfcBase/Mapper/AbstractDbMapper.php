@@ -125,7 +125,7 @@ abstract class AbstractDbMapper implements
             $pkField = $this->getHydrator()->getFieldForProperty($this->getPrimaryKey());
             $delete->where(array($pkField => $value));
             $statement = $sql->prepareStatementForSqlObject($delete);
-            $result = $statement->execute();
+            $statement->execute();
             return true;
         }
         return false;
@@ -167,14 +167,7 @@ abstract class AbstractDbMapper implements
         $update->where(array($pkField => $pkValue));
 
         $statement = $sql->prepareStatementForSqlObject($update);
-        var_dump($statement->getSql());
-        try {
-            $result = $statement->execute();
-
-        } catch (\Exception $e) {
-            var_dump($e->getMessage());
-        }
-
+        $result = $statement->execute();
         return $result->getAffectedRows();
     }
 
@@ -242,7 +235,7 @@ abstract class AbstractDbMapper implements
      *
      * @return void
      */
-    public function flush()
+    public function flush($object = null, array $options = array())
     {
         // not supported in Db Mapper, do nothing
     }
