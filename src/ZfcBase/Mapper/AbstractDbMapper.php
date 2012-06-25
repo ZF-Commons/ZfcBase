@@ -23,7 +23,7 @@ abstract class AbstractDbMapper
     /**
      * @var object
      */
-    protected $modelPrototype;
+    protected $entityPrototype;
 
     /**
      * @var HydratingResultSet
@@ -55,22 +55,23 @@ abstract class AbstractDbMapper
     /**
      * @return object
      */
-    public function getModelPrototype()
+    public function getEntityPrototype()
     {
-        if (!$this->modelPrototype) {
+        if (!$this->entityPrototype) {
             $className = $this->getOptions()->getClassName();
-            $this->modelPrototype = new $className;
+            $this->entityPrototype = new $className;
         }
-        return $this->modelPrototype;
+        return $this->entityPrototype;
     }
 
     /**
      * @param object $modelPrototype
      * @return AbstractDbMapper
      */
-    public function setModelPrototype($modelPrototype)
+    public function setEntityPrototype($entityPrototype)
     {
-        $this->modelPrototype = $modelPrototype;
+        $this->modelPrototype = $entityPrototype;
+        unset($this->resultSetPrototype);
         return $this;
     }
 
@@ -110,6 +111,7 @@ abstract class AbstractDbMapper
     public function setHydrator(HydratorInterface $hydrator)
     {
         $this->hydrator = $hydrator;
+        unset($this->resultSetPrototype);
         return $this;
     }
 
