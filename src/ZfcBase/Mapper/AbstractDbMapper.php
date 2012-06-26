@@ -5,6 +5,7 @@ namespace ZfcBase\Mapper;
 use Zend\Db\Adapter\Adapter;
 use Zend\Db\ResultSet\HydratingResultSet;
 use Zend\Db\Sql\Select;
+use Zend\Db\Sql\Sql;
 use Zend\Stdlib\Hydrator\HydratorInterface;
 use Zend\Stdlib\Hydrator\ClassMethods;
 
@@ -53,14 +54,28 @@ abstract class AbstractDbMapper
     }
 
     /**
+     * @param object $entity
+     * @return object
+     */
+    public function insert($entity, $tableName = null)
+    {
+        $tableName = $tableName ?: $this->tableName;
+        $rowData = $this->getHydrator()->extract($entity);
+
+        $sql = new Sql($this->getDbAdapter(), $tableName);
+        $insert = $sql->insert();
+        $insert->values($rowData);
+
+        $statement = $sql->prepareStatementForSqlObject($insert);
+        $result = $statement->execute();
+        return $entity;
+    }
+
+    /**
      * @return object
      */
     public function getEntityPrototype()
     {
-        if (!$this->entityPrototype) {
-            $className = $this->getOptions()->getClassName();
-            $this->entityPrototype = new $className;
-        }
         return $this->entityPrototype;
     }
 
@@ -70,8 +85,8 @@ abstract class AbstractDbMapper
      */
     public function setEntityPrototype($entityPrototype)
     {
-        $this->modelPrototype = $entityPrototype;
-        unset($this->resultSetPrototype);
+        $this->entityPrototype = $entityPrototype;
+        $this->resultSetPrototype = null;
         return $this;
     }
 
@@ -99,7 +114,7 @@ abstract class AbstractDbMapper
     public function getHydrator()
     {
         if (!$this->hydrator) {
-            $this->hydrator = new ClassMethods;
+            $this->hydrator = new ClassMethods(false);
         }
         return $this->hydrator;
     }
@@ -111,7 +126,7 @@ abstract class AbstractDbMapper
     public function setHydrator(HydratorInterface $hydrator)
     {
         $this->hydrator = $hydrator;
-        unset($this->resultSetPrototype);
+        $this->resultSetPrototype = null;
         return $this;
     }
 
@@ -123,7 +138,7 @@ abstract class AbstractDbMapper
         if (!$this->resultSetPrototype) {
             $this->resultSetPrototype = new HydratingResultSet;
             $this->resultSetPrototype->setHydrator($this->getHydrator());
-            $this->resultSetPrototype->setObjectPrototype($this->getModelPrototype());
+            $this->resultSetPrototype->setObjectPrototype($this->getEntityPrototype());
         }
         return clone $this->resultSetPrototype;
     }
