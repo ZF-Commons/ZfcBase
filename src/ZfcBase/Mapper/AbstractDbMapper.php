@@ -54,13 +54,25 @@ abstract class AbstractDbMapper
     }
 
     /**
-     * @param object $entity
-     * @return object
+     * @param object|array $entity
+     * @param string $tableName
+     * @param HydratorInterface $hydrator
+     * @return object|array
      */
-    public function insert($entity, $tableName = null)
+    public function insert($entity, $tableName = null, HydratorInterface $hydrator = null)
     {
         $tableName = $tableName ?: $this->tableName;
-        $rowData = $this->getHydrator()->extract($entity);
+
+        if (is_array($entity)) {
+            $rowData = $entity;
+        } elseif (is_object($entity)) {
+            if (!$hydrator) {
+                $hydrator = $this->getHydrator();
+            }
+            $rowData = $hydrator->extract($entity);
+        } else {
+            throw Exception\InvalidArgumentException('Entity passed to db mapper should be an array or object.');
+        }
 
         $sql = new Sql($this->getDbAdapter(), $tableName);
         $insert = $sql->insert();
