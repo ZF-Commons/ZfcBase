@@ -2,167 +2,204 @@
 
 namespace ZfcBase\Mapper;
 
-use ArrayObject;
-use Traversable;
-use Zend\Db\TableGateway\TableGatewayInterface;
-use Zend\Db\TableGateway\AbstractTableGateway;
-use Zend\Db\TableGateway\TableGateway;
-use ZfcBase\EventManager\EventProvider;
-use ZfcBase\Model\AbstractModel;
-use ZfcUser\Module as ZfcUser;
+use Zend\Db\Adapter\Adapter;
+use Zend\Db\ResultSet\HydratingResultSet;
+use Zend\Db\Sql\Select;
+use Zend\Db\Sql\Sql;
+use Zend\Stdlib\Hydrator\HydratorInterface;
+use Zend\Stdlib\Hydrator\ClassMethods;
 
-abstract class AbstractDbMapper extends EventProvider implements DataMapperInterface
+abstract class AbstractDbMapper
 {
     /**
-     * tableGateway 
-     * 
-     * @var TableGatewayInterface
+     * @var Adapter
      */
-    protected $tableGateway;
+    protected $dbAdapter;
 
     /**
-     * Get table name
-     *
-     * @return string
+     * @var HydratorInterface
      */
-    abstract public function getTableName();
+    protected $hydrator;
 
     /**
-     * Get primary key
-     *
-     * @return string
+     * @var object
      */
-    abstract public function getPrimaryKey();
+    protected $entityPrototype;
 
     /**
-     * Get tableGateway.
-     *
-     * @return TableGatewayInterface
+     * @var HydratingResultSet
      */
-    public function getTableGateway()
+    protected $resultSetPrototype;
+
+    /**
+     * @var Select
+     */
+    protected $selectPrototype;
+
+    /**
+     * @param Select $select
+     * @return HydratingResultSet
+     */
+    public function selectWith(Select $select)
     {
-        return $this->tableGateway;
+        $adapter = $this->getDbAdapter();
+        $statement = $adapter->createStatement();
+        $select->prepareStatement($adapter, $statement);
+        $result = $statement->execute();
+
+        $resultSet = $this->getResultSet();
+        $resultSet->initialize($result);
+
+        return $resultSet;
     }
- 
+
     /**
-     * Set tableGateway.
-     *
-     * @param TableGatewayInterface $tableGateway
+     * @param object|array $entity
+     * @param string $tableName
+     * @param HydratorInterface $hydrator
+     * @return object|array
      */
-    public function setTableGateway(TableGatewayInterface $tableGateway)
+    public function insert($entity, $tableName = null, HydratorInterface $hydrator = null)
     {
-        $this->tableGateway = $tableGateway;
+        $tableName = $tableName ?: $this->tableName;
+
+        $rowData = $this->entityToArray($entity, $hydrator);
+
+        $sql = new Sql($this->getDbAdapter(), $tableName);
+        $insert = $sql->insert();
+        $insert->values($rowData);
+
+        $statement = $sql->prepareStatementForSqlObject($insert);
+        $result = $statement->execute();
+        return $entity;
+    }
+
+    /**
+     * @param object|array $entity
+     * @param  string|array|closure $where
+     * @param string $tableName
+     * @param HydratorInterface $hydrator
+     * @return mixed
+     */
+    public function update($entity, $where, $tableName = null, HydratorInterface $hydrator = null)
+    {
+        $tableName = $tableName ?: $this->tableName;
+
+        $rowData = $this->entityToArray($entity, $hydrator);
+        $sql = new Sql($this->getDbAdapter(), $tableName);
+
+        $update = $sql->update();
+        $update->set($rowData);
+        $update->where($where);
+        $statement = $sql->prepareStatementForSqlObject($update);
+        $result = $statement->execute();
+
+        return $result->getAffectedRows();
+    }
+
+    /**
+     * @return object
+     */
+    public function getEntityPrototype()
+    {
+        return $this->entityPrototype;
+    }
+
+    /**
+     * @param object $modelPrototype
+     * @return AbstractDbMapper
+     */
+    public function setEntityPrototype($entityPrototype)
+    {
+        $this->entityPrototype = $entityPrototype;
+        $this->resultSetPrototype = null;
         return $this;
     }
 
     /**
-     * toScalarValueArray 
-     * 
-     * @param array $values 
+     * @return Adapter
+     */
+    public function getDbAdapter()
+    {
+        return $this->dbAdapter;
+    }
+
+    /**
+     * @param Adapter $dbAdapter
+     * @return AbstractDbMapper
+     */
+    public function setDbAdapter(Adapter $dbAdapter)
+    {
+        $this->dbAdapter = $dbAdapter;
+        return $this;
+    }
+
+    /**
+     * @return HydratorInterface
+     */
+    public function getHydrator()
+    {
+        if (!$this->hydrator) {
+            $this->hydrator = new ClassMethods(false);
+        }
+        return $this->hydrator;
+    }
+
+    /**
+     * @param HydratorInterface $hydrator
+     * @return AbstractDbMapper
+     */
+    public function setHydrator(HydratorInterface $hydrator)
+    {
+        $this->hydrator = $hydrator;
+        $this->resultSetPrototype = null;
+        return $this;
+    }
+
+    /**
+     * @return HydratingResultSet
+     */
+    protected function getResultSet()
+    {
+        if (!$this->resultSetPrototype) {
+            $this->resultSetPrototype = new HydratingResultSet;
+            $this->resultSetPrototype->setHydrator($this->getHydrator());
+            $this->resultSetPrototype->setObjectPrototype($this->getEntityPrototype());
+        }
+        return clone $this->resultSetPrototype;
+    }
+
+    /**
+     * select
+     *
+     * @return Select
+     */
+    protected function select()
+    {
+        if (!$this->selectPrototype) {
+            $this->selectPrototype = new Select;
+        }
+        return clone $this->selectPrototype;
+    }
+
+    /**
+     * Uses the hydrator to convert the entity to an array.
+     *
+     * Use this method to ensure that you're working with an array.
+     *
+     * @param object $entity
      * @return array
      */
-    protected function toScalarValueArray($values) {
-        //convert object toArray first
-        if(is_object($values)) {
-            if(is_callable(array($values, 'toScalarValueArray'))) {
-                return $values->toScalarValueArray();
-            }
-            
-            if(is_callable(array($values, 'toArray'))) {
-                $values = $values->toArray();
-            }
-        }
-        
-        if(!is_array($values)) {
-            throw new Exception\InvalidArgumentException("Parameter is not an array");
-        }
-        
-        $ret = array();
-        foreach($values as $key => $value) {
-            if(is_scalar($value)) {
-                $ret[$key] = $value;
-                continue;
-            }
-            if(is_object($value)) {
-                $ret[$key] = $this->convertObjectToScalar($value);
-                continue;
-            }
-            if($value == null) {
-                $ret[$key] = null;
-                continue;
-            }
-            
-            throw new Exception\InvalidArgumentException("Can not convert '$key' key value to string");
-        }
-        
-        return $ret;
-    }
-
-    /**
-     * convertObjectToScalar 
-     * 
-     * @param mixed $obj 
-     * @access string
-     * @return void
-     */
-    protected function convertObjectToScalar($obj) {
-
-        if(is_callable(array($obj, '__toString'))) {
-            return $obj->__toString();
-        }
-        if($obj instanceof \DateTime) {
-            return $obj->format('Y-m-d\TH:i:s');
-        }
-        
-        throw new Exception\InvalidArgumentException("Can not convert object '" . get_class($obj) . "' to string");
-    }
-
-    /**
-     * @param $id
-     * @return object
-     */
-    public function find($id)
+    protected function entityToArray($entity, HydratorInterface $hydrator = null)
     {
-        $rowset = $this->getTableGateway()->select(array($this->getPrimaryKey() => $id));
-        $row = $rowset->current();
-        $model = $this->fromRow($row);
-        $this->events()->trigger(__FUNCTION__ . '.post', $this, array('model' => $model, 'row' => $row));
-        return $model;
-    }
-
-    abstract protected function fromRow($row);
-
-    /**
-     * Persists a mapped object
-     *
-     * @param object $model
-     * @return object
-     * @throws Exception\RuntimeException
-     * @throws Exception\InvalidArgumentException
-     */
-    public function persist($model)
-    {
-        if (!is_object($model) || \get_class($model) !== $this->getClassName()) {
-            throw new Exception\InvalidArgumentException('$model must be an instance of ' . $this->getClassName());
-        }
-        $data = new ArrayObject($this->toScalarValueArray($model)); // or perhaps pass it by reference?
-        $this->events()->trigger(__FUNCTION__ . '.pre', $this, array('data' => $data, 'model' => $model));
-        $idGetter = AbstractModel::fieldToGetterMethod($this->getPrimaryKey());
-        if ($model->$idGetter() > 0) {
-            $this->getTableGateway()->update((array) $data, array($this->getPrimaryKey() => $model->$idGetter()));
-        } else {
-            $this->getTableGateway()->insert((array) $data);
-            if (!$this->getTableGateway() instanceof AbstractTableGateway) {
-                throw new Exception\RuntimeException(
-                    get_class($this->getTableGateway()) . ' is not an instance of '
-                    . 'Zend\Db\TableGateway\AbstractTableGateway. This is needed, to have access to the db adapter'
-                );
+        if (is_array($entity)) {
+            return $entity; // cut down on duplicate code
+        } elseif (is_object($entity)) {
+            if (!$hydrator) {
+                $hydrator = $this->getHydrator();
             }
-            $id = $this->getTableGateway()->getAdapter()->getDriver()->getLastGeneratedValue();
-            $idSetter = AbstractModel::fieldToSetterMethod($this->getPrimaryKey());
-            $model->$idSetter($id);
+            return $hydrator->extract($entity);
         }
-        return $model;
+        throw Exception\InvalidArgumentException('Entity passed to db mapper should be an array or object.');
     }
-
 }

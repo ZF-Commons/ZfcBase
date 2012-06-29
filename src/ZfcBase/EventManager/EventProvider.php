@@ -3,10 +3,11 @@
 namespace ZfcBase\EventManager;
 
 use Traversable;
+use Zend\EventManager\EventManagerAwareInterface;
 use Zend\EventManager\EventManagerInterface;
 use Zend\EventManager\EventManager;
 
-abstract class EventProvider
+abstract class EventProvider implements EventManagerAwareInterface
 {
     /**
      * @var EventManagerInterface
@@ -15,8 +16,8 @@ abstract class EventProvider
 
     /**
      * Set the event manager instance used by this context
-     * 
-     * @param  EventManagerInterface $events 
+     *
+     * @param  EventManagerInterface $events
      * @return mixed
      */
     public function setEventManager(EventManagerInterface $events)
@@ -42,7 +43,7 @@ abstract class EventProvider
      * Retrieve the event manager
      *
      * Lazy-loads an EventManager instance if none registered.
-     * 
+     *
      * @return EventManagerInterface
      */
     public function events()
