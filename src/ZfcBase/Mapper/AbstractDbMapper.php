@@ -63,16 +63,7 @@ abstract class AbstractDbMapper
     {
         $tableName = $tableName ?: $this->tableName;
 
-        if (is_array($entity)) {
-            $rowData = $entity;
-        } elseif (is_object($entity)) {
-            if (!$hydrator) {
-                $hydrator = $this->getHydrator();
-            }
-            $rowData = $hydrator->extract($entity);
-        } else {
-            throw Exception\InvalidArgumentException('Entity passed to db mapper should be an array or object.');
-        }
+        $rowData = $this->entityToArray($entity, $hydrator);
 
         $sql = new Sql($this->getDbAdapter(), $tableName);
         $insert = $sql->insert();
@@ -81,6 +72,29 @@ abstract class AbstractDbMapper
         $statement = $sql->prepareStatementForSqlObject($insert);
         $result = $statement->execute();
         return $entity;
+    }
+
+    /**
+     * @param object|array $entity
+     * @param  string|array|closure $where
+     * @param string $tableName
+     * @param HydratorInterface $hydrator
+     * @return mixed
+     */
+    public function update($entity, $where, $tableName = null, HydratorInterface $hydrator = null)
+    {
+        $tableName = $tableName ?: $this->tableName;
+
+        $rowData = $this->entityToArray($entity, $hydrator);
+        $sql = new Sql($this->getDbAdapter(), $tableName);
+
+        $update = $sql->update();
+        $update->set($rowData);
+        $update->where($where);
+        $statement = $sql->prepareStatementForSqlObject($update);
+        $result = $statement->execute();
+
+        return $result->getAffectedRows();
     }
 
     /**
@@ -166,5 +180,26 @@ abstract class AbstractDbMapper
             $this->selectPrototype = new Select;
         }
         return clone $this->selectPrototype;
+    }
+
+    /**
+     * Uses the hydrator to convert the entity to an array.
+     *
+     * Use this method to ensure that you're working with an array.
+     *
+     * @param object $entity
+     * @return array
+     */
+    protected function entityToArray($entity, HydratorInterface $hydrator = null)
+    {
+        if (is_array($entity)) {
+            return $entity; // cut down on duplicate code
+        } elseif (is_object($entity)) {
+            if (!$hydrator) {
+                $hydrator = $this->getHydrator();
+            }
+            return $hydrator->extract($entity);
+        }
+        throw Exception\InvalidArgumentException('Entity passed to db mapper should be an array or object.');
     }
 }
