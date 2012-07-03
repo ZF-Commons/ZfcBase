@@ -32,7 +32,7 @@ class ProvidesEventsForm extends Form
      * 
      * @return EventManagerInterface
      */
-    public function events()
+    public function getEventManager()
     {
         if (!$this->events instanceof EventManagerInterface) {
             $identifiers = array(__CLASS__, get_called_class());

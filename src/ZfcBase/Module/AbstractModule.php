@@ -21,9 +21,9 @@ abstract class AbstractModule implements
     
     public function init(ModuleManager $moduleManager)
     {
-        $events = $moduleManager->events()->getSharedManager();
+        $sharedManager = $moduleManager->getEventManager()->getSharedManager();
         $instance = $this;//TODO this will no be needed in PHP 5.4
-        $events->attach('application', 'bootstrap', function($e) use ($instance, $moduleManager) {
+        $sharedManager->attach('application', 'bootstrap', function($e) use ($instance, $moduleManager) {
             $app = $e->getParam('application');
             $instance->setMergedConfig($app->getConfiguration());
             $instance->bootstrap($moduleManager, $app);
