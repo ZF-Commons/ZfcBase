@@ -8,8 +8,9 @@ use Zend\Db\Sql\Select;
 use Zend\Db\Sql\Sql;
 use Zend\Stdlib\Hydrator\HydratorInterface;
 use Zend\Stdlib\Hydrator\ClassMethods;
+use ZfcBase\EventManager\EventProvider;
 
-abstract class AbstractDbMapper
+abstract class AbstractDbMapper extends EventProvider
 {
     /**
      * @var Adapter
