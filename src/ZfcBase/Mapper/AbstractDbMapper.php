@@ -41,7 +41,7 @@ abstract class AbstractDbMapper extends EventProvider
      * @param Select $select
      * @return HydratingResultSet
      */
-    public function selectWith(Select $select)
+    public function selectWith(Select $select, $entityPrototype = null, HydratorInterface $hydrator = null)
     {
         $adapter = $this->getDbAdapter();
         $statement = $adapter->createStatement();
@@ -49,6 +49,15 @@ abstract class AbstractDbMapper extends EventProvider
         $result = $statement->execute();
 
         $resultSet = $this->getResultSet();
+
+        if (isset($entityPrototype)) {
+            $resultSet->setObjectPrototype($entityPrototype);
+        }
+
+        if (isset($hydrator)) {
+            $resultSet->setHydrator($hydrator);
+        }
+
         $resultSet->initialize($result);
 
         return $resultSet;
