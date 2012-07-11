@@ -67,7 +67,7 @@ abstract class AbstractDbMapper extends EventProvider
      * @param object|array $entity
      * @param string $tableName
      * @param HydratorInterface $hydrator
-     * @return object|array
+     * @return Zend\Db\Adapter\Driver\ResultInterface
      */
     public function insert($entity, $tableName = null, HydratorInterface $hydrator = null)
     {
@@ -80,8 +80,7 @@ abstract class AbstractDbMapper extends EventProvider
         $insert->values($rowData);
 
         $statement = $sql->prepareStatementForSqlObject($insert);
-        $result = $statement->execute();
-        return $entity;
+        return $statement->execute();
     }
 
     /**
