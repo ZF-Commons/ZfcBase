@@ -3,6 +3,7 @@
 namespace ZfcBase\Mapper;
 
 use Zend\Db\Adapter\Adapter;
+use Zend\Db\Adapter\Driver\ResultInterface;
 use Zend\Db\ResultSet\HydratingResultSet;
 use Zend\Db\Sql\Select;
 use Zend\Db\Sql\Sql;
@@ -67,7 +68,7 @@ abstract class AbstractDbMapper extends EventProvider
      * @param object|array $entity
      * @param string $tableName
      * @param HydratorInterface $hydrator
-     * @return object|array
+     * @return ResultInterface
      */
     public function insert($entity, $tableName = null, HydratorInterface $hydrator = null)
     {
@@ -80,8 +81,7 @@ abstract class AbstractDbMapper extends EventProvider
         $insert->values($rowData);
 
         $statement = $sql->prepareStatementForSqlObject($insert);
-        $result = $statement->execute();
-        return $entity;
+        return $statement->execute();
     }
 
     /**
