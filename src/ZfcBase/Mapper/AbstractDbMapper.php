@@ -210,6 +210,6 @@ abstract class AbstractDbMapper extends EventProvider
             }
             return $hydrator->extract($entity);
         }
-        throw Exception\InvalidArgumentException('Entity passed to db mapper should be an array or object.');
+        throw new Exception\InvalidArgumentException('Entity passed to db mapper should be an array or object.');
     }
 }
