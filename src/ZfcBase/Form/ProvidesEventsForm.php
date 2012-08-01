@@ -2,9 +2,9 @@
 
 namespace ZfcBase\Form;
 
-use Zend\Form\Form,
-    Zend\EventManager\EventManagerInterface,
-    Zend\EventManager\EventManager;
+use Zend\Form\Form;
+use Zend\EventManager\EventManagerInterface;
+use Zend\EventManager\EventManager;
 
 class ProvidesEventsForm extends Form
 {
@@ -15,8 +15,8 @@ class ProvidesEventsForm extends Form
 
     /**
      * Set the event manager instance used by this context
-     * 
-     * @param  EventManagerInterface $events 
+     *
+     * @param  EventManagerInterface $events
      * @return mixed
      */
     public function setEventManager(EventManagerInterface $events)
@@ -29,7 +29,7 @@ class ProvidesEventsForm extends Form
      * Retrieve the event manager
      *
      * Lazy-loads an EventManager instance if none registered.
-     * 
+     *
      * @return EventManagerInterface
      */
     public function getEventManager()
