@@ -7,8 +7,9 @@ php:
 
 env:
  - ZF2_PATH=zf2/library
+
 before_install:
  - git clone https://github.com/zendframework/zf2.git
 
 script:
- - phpunit
+ - cd tests; phpunit
