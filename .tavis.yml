@@ -5,8 +5,9 @@ php:
   - 5.3
   - 5.4
 
+env:
+ - ZF2_PATH=zf2/library
 before_install:
- - cd tests; cp TestConfig.php.travis TestConfig.php
  - git clone https://github.com/zendframework/zf2.git
 
 script:
