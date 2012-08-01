@@ -1,0 +1,13 @@
+language: php
+
+php:
+  - 5.3.3
+  - 5.3
+  - 5.4
+
+before_install:
+ - cd tests; cp TestConfig.php.travis TestConfig.php
+ - git clone https://github.com/zendframework/zf2.git
+
+script:
+ - phpunit
