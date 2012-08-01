@@ -2,6 +2,8 @@
 
 Version 0.0.1 Created by Evan Coury and the ZF-Commons team
 
+[![Build Status](https://secure.travis-ci.org/ZF-Commons/ZfcBase.png?branch=master)](http://travis-ci.org/ZF-Commons/ZfcBase)
+
 ## Introduction
 
 ZfcBase provides a suite of common classes used across several ZF2 modules.
