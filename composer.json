@@ -23,8 +23,11 @@
         "zendframework/zendframework": "dev-master"
     },
     "autoload": {
+        "psr-0": {
+            "ZfcUser": "src/"
+        },
         "classmap": [
-            "./"
+            "./Module.php"
         ]
     }
 }
