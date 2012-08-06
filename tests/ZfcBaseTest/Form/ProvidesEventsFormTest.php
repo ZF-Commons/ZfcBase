@@ -1,5 +1,5 @@
 <?php
-namespace ZfcBaseTest\Mapper;
+namespace ZfcBaseTest\Form;
 
 use PHPUnit_Framework_TestCase;
 use ZfcBaseTest\Bootstrap;
