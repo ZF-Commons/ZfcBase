@@ -17,6 +17,11 @@ abstract class AbstractDbMapper extends EventProvider
      * @var Adapter
      */
     protected $dbAdapter;
+    
+    /**
+     * @var Adapter
+     */
+    protected $dbSlaveAdapter;
 
     /**
      * @var HydratorInterface
@@ -44,7 +49,7 @@ abstract class AbstractDbMapper extends EventProvider
      */
     public function selectWith(Select $select, $entityPrototype = null, HydratorInterface $hydrator = null)
     {
-        $adapter = $this->getDbAdapter();
+        $adapter = $this->getDbSlaveAdapter();
         $statement = $adapter->createStatement();
         $select->prepareStatement($adapter, $statement);
         $result = $statement->execute();
@@ -141,6 +146,24 @@ abstract class AbstractDbMapper extends EventProvider
     public function setDbAdapter(Adapter $dbAdapter)
     {
         $this->dbAdapter = $dbAdapter;
+        return $this;
+    }
+    
+    /**
+     * @return Adapter
+     */
+    public function getDbSlaveAdapter()
+    {
+        return $this->dbSlaveAdapter ?: $this->dbAdapter;
+    }
+    
+    /**
+     * @param Adapter $dbAdapter
+     * @return AbstractDbMapper
+     */
+    public function setDbSlaveAdapter(Adapter $dbSlaveAdapter)
+    {
+        $this->dbSlaveAdapter = $dbSlaveAdapter;
         return $this;
     }
 
