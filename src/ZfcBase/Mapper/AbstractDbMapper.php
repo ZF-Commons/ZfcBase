@@ -10,6 +10,7 @@ use Zend\Db\Sql\Sql;
 use Zend\Stdlib\Hydrator\HydratorInterface;
 use Zend\Stdlib\Hydrator\ClassMethods;
 use ZfcBase\EventManager\EventProvider;
+use ZfcBase\Db\Adapter\MasterSlaveAdapter;
 
 abstract class AbstractDbMapper extends EventProvider
 {
@@ -146,6 +147,9 @@ abstract class AbstractDbMapper extends EventProvider
     public function setDbAdapter(Adapter $dbAdapter)
     {
         $this->dbAdapter = $dbAdapter;
+        if ($dbAdapter instanceof MasterSlaveAdapter) {
+            $this->setDbSlaveAdapter($dbAdapter->getSlaveAdapter());
+        }
         return $this;
     }
     
