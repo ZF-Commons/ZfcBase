@@ -6,7 +6,7 @@ use Zend\Db\Adapter\Adapter;
 use Zend\Db\Adapter\Platform;
 use Zend\Db\ResultSet;
 
-class MasterSlaveAdapter extends Adapter
+class MasterSlaveAdapter extends Adapter implements MasterSlaveAdapterInterface
 {
     /**
      * slave adapter
