@@ -25,7 +25,7 @@ abstract class AbstractModule implements
         $instance = $this;//TODO this will no be needed in PHP 5.4
         $sharedManager->attach('application', 'bootstrap', function($e) use ($instance, $moduleManager) {
             $app = $e->getParam('application');
-            $instance->setMergedConfig($app->getConfiguration());
+            $instance->setMergedConfig($app->getConfig());
             $instance->bootstrap($moduleManager, $app);
         });
     }
