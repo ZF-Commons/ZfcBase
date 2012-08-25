@@ -56,6 +56,11 @@ abstract class AbstractDbMapper extends EventProvider
     private $slaveSql;
 
     /**
+     * @var string
+     */
+    protected $tableName;
+
+    /**
      * @var boolean
      */
     private $isInitialized = false;
@@ -177,6 +182,14 @@ abstract class AbstractDbMapper extends EventProvider
         $statement = $sql->prepareStatementForSqlObject($delete);
 
         return $statement->execute();
+    }
+
+    /**
+     * @return string
+     */
+    protected function getTableName()
+    {
+        return $this->tableName;
     }
 
     /**
