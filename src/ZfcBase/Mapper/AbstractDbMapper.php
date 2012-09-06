@@ -163,10 +163,9 @@ abstract class AbstractDbMapper extends EventProvider
     /**
      * @param string|array|closure $where
      * @param string|TableIdentifier|null $tableName
-     * @param HydratorInterface|null $hydrator
      * @return ResultInterface
      */
-    protected function delete($where, $tableName = null, HydratorInterface $hydrator = null)
+    protected function delete($where, $tableName = null)
     {
         $tableName = $tableName ?: $this->tableName;
 
