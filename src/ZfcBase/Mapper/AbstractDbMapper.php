@@ -278,7 +278,7 @@ abstract class AbstractDbMapper extends EventProvider
     protected function getSql()
     {
         if (!$this->sql instanceof Sql) {
-            $sql = new Sql($this->getDbAdapter());
+            $this->sql = new Sql($this->getDbAdapter());
         }
 
         return $this->sql;
