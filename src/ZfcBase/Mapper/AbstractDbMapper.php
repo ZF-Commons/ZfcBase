@@ -7,6 +7,7 @@ use Zend\Db\Adapter\Driver\ResultInterface;
 use Zend\Db\ResultSet\HydratingResultSet;
 use Zend\Db\Sql\Select;
 use Zend\Db\Sql\Sql;
+use Zend\Db\Sql\TableIdentifier;
 use Zend\Stdlib\Hydrator\HydratorInterface;
 use Zend\Stdlib\Hydrator\ClassMethods;
 use ZfcBase\EventManager\EventProvider;
@@ -18,7 +19,7 @@ abstract class AbstractDbMapper extends EventProvider
      * @var Adapter
      */
     protected $dbAdapter;
-    
+
     /**
      * @var Adapter
      */
@@ -45,72 +46,150 @@ abstract class AbstractDbMapper extends EventProvider
     protected $selectPrototype;
 
     /**
+     * @var Sql
+     */
+    private $sql;
+
+    /**
+     * @var Sql
+     */
+    private $slaveSql;
+
+    /**
+     * @var string
+     */
+    protected $tableName;
+
+    /**
+     * @var boolean
+     */
+    private $isInitialized = false;
+
+    /**
+     * Performs some basic initialization setup and checks before running a query
+     * @return null
+     */
+    protected function initialize()
+    {
+        if ($this->isInitialized) {
+            return;
+        }
+
+        if (!$this->dbAdapter instanceof Adapter) {
+            throw new \Exception('No db adapter present');
+        }
+
+        if (!$this->hydrator instanceof HydratorInterface) {
+            $this->hydrator = new ClassMethods;
+        }
+
+        if (!is_object($this->entityPrototype)) {
+            throw new \Exception('No entity prototype set');
+        }
+
+        $this->isInitialized = true;
+    }
+
+    /**
+     * @param string|null $table
+     * return Select
+     */
+    protected function getSelect($table = null)
+    {
+        $this->initialize();
+        return $this->getSlaveSql()->select($table);
+    }
+
+    /**
      * @param Select $select
+     * @param object|null $entityPrototype
+     * @param HydratorInterface|null $hydrator
      * @return HydratingResultSet
      */
-    public function selectWith(Select $select, $entityPrototype = null, HydratorInterface $hydrator = null)
+    protected function select(Select $select, $entityPrototype = null, HydratorInterface $hydrator = null)
     {
-        $adapter = $this->getDbSlaveAdapter();
-        $statement = $adapter->createStatement();
-        $select->prepareStatement($adapter, $statement);
-        $result = $statement->execute();
+        $this->initialize();
 
-        $resultSet = $this->getResultSet();
+        $stmt = $this->getSlaveSql()->prepareStatementForSqlObject($select);
 
-        if (isset($entityPrototype)) {
-            $resultSet->setObjectPrototype($entityPrototype);
-        }
+        $resultSet = new HydratingResultSet($hydrator ?: $this->getHydrator(),
+            $entityPrototype ?: $this->getEntityPrototype());
 
-        if (isset($hydrator)) {
-            $resultSet->setHydrator($hydrator);
-        }
-
-        $resultSet->initialize($result);
-
+        $resultSet->initialize($stmt->execute());
         return $resultSet;
     }
 
     /**
      * @param object|array $entity
-     * @param string $tableName
-     * @param HydratorInterface $hydrator
+     * @param string|TableIdentifier|null $tableName
+     * @param HydratorInterface|null $hydrator
      * @return ResultInterface
      */
-    public function insert($entity, $tableName = null, HydratorInterface $hydrator = null)
+    protected function insert($entity, $tableName = null, HydratorInterface $hydrator = null)
     {
+        $this->initialize();
         $tableName = $tableName ?: $this->tableName;
 
-        $rowData = $this->entityToArray($entity, $hydrator);
-
-        $sql = new Sql($this->getDbAdapter(), $tableName);
+        $sql = $this->getSql()->setTable($tableName);
         $insert = $sql->insert();
+
+        $rowData = $this->entityToArray($entity, $hydrator);
         $insert->values($rowData);
 
         $statement = $sql->prepareStatementForSqlObject($insert);
+
         return $statement->execute();
     }
 
     /**
      * @param object|array $entity
-     * @param  string|array|closure $where
-     * @param string $tableName
-     * @param HydratorInterface $hydrator
-     * @return mixed
+     * @param string|array|closure $where
+     * @param string|TableIdentifier|null $tableName
+     * @param HydratorInterface|null $hydrator
+     * @return ResultInterface
      */
-    public function update($entity, $where, $tableName = null, HydratorInterface $hydrator = null)
+    protected function update($entity, $where, $tableName = null, HydratorInterface $hydrator = null)
+    {
+        $this->initialize();
+        $tableName = $tableName ?: $this->tableName;
+
+        $sql = $this->getSql()->setTable($tableName);
+        $update = $sql->update();
+
+        $rowData = $this->entityToArray($entity, $hydrator);
+        $update->set($rowData)
+            ->where($where);
+
+        $statement = $sql->prepareStatementForSqlObject($update);
+
+        return $statement->execute();
+    }
+
+    /**
+     * @param string|array|closure $where
+     * @param string|TableIdentifier|null $tableName
+     * @return ResultInterface
+     */
+    protected function delete($where, $tableName = null)
     {
         $tableName = $tableName ?: $this->tableName;
 
-        $rowData = $this->entityToArray($entity, $hydrator);
-        $sql = new Sql($this->getDbAdapter(), $tableName);
+        $sql = $this->getSql()->setTable($tableName);
+        $delete = $sql->delete();
 
-        $update = $sql->update();
-        $update->set($rowData);
-        $update->where($where);
-        $statement = $sql->prepareStatementForSqlObject($update);
-        $result = $statement->execute();
+        $delete->where($where);
 
-        return $result->getAffectedRows();
+        $statement = $sql->prepareStatementForSqlObject($delete);
+
+        return $statement->execute();
+    }
+
+    /**
+     * @return string
+     */
+    protected function getTableName()
+    {
+        return $this->tableName;
     }
 
     /**
@@ -152,7 +231,7 @@ abstract class AbstractDbMapper extends EventProvider
         }
         return $this;
     }
-    
+
     /**
      * @return Adapter
      */
@@ -160,7 +239,7 @@ abstract class AbstractDbMapper extends EventProvider
     {
         return $this->dbSlaveAdapter ?: $this->dbAdapter;
     }
-    
+
     /**
      * @param Adapter $dbAdapter
      * @return AbstractDbMapper
@@ -194,29 +273,47 @@ abstract class AbstractDbMapper extends EventProvider
     }
 
     /**
-     * @return HydratingResultSet
+     * @return Sql
      */
-    protected function getResultSet()
+    protected function getSql()
     {
-        if (!$this->resultSetPrototype) {
-            $this->resultSetPrototype = new HydratingResultSet;
-            $this->resultSetPrototype->setHydrator($this->getHydrator());
-            $this->resultSetPrototype->setObjectPrototype($this->getEntityPrototype());
+        if (!$this->sql instanceof Sql) {
+            $sql = new Sql($this->getDbAdapter());
         }
-        return clone $this->resultSetPrototype;
+
+        return $this->sql;
     }
 
     /**
-     * select
-     *
-     * @return Select
+     * @param Sql
+     * @return AbstractDbMapper
      */
-    protected function select()
+    protected function setSql(Sql $sql)
     {
-        if (!$this->selectPrototype) {
-            $this->selectPrototype = new Select;
+        $this->sql = $sql;
+        return $this;
+    }
+
+    /**
+     * @return Sql
+     */
+    protected function getSlaveSql()
+    {
+        if (!$this->slaveSql instanceof Sql) {
+            $this->slaveSql = new Sql($this->getDbSlaveAdapter());
         }
-        return clone $this->selectPrototype;
+
+        return $this->slaveSql;
+    }
+
+    /**
+     * @param Sql
+     * @return AbstractDbMapper
+     */
+    protected function setSlaveSql(Sql $sql)
+    {
+        $this->slaveSql = $sql;
+        return $this;
     }
 
     /**
