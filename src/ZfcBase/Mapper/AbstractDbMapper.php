@@ -122,6 +122,7 @@ abstract class AbstractDbMapper extends EventProvider
      */
     protected function insert($entity, $tableName = null, HydratorInterface $hydrator = null)
     {
+        $this->initialize();
         $tableName = $tableName ?: $this->tableName;
 
         $sql = $this->getSql()->setTable($tableName);
@@ -144,6 +145,7 @@ abstract class AbstractDbMapper extends EventProvider
      */
     protected function update($entity, $where, $tableName = null, HydratorInterface $hydrator = null)
     {
+        $this->initialize();
         $tableName = $tableName ?: $this->tableName;
 
         $sql = $this->getSql()->setTable($tableName);
