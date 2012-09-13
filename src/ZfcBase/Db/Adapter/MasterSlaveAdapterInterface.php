@@ -2,7 +2,7 @@
 
 namespace ZfcBase\Db\Adapter;
 
-interface MasterSlaveAdapterInterface 
+interface MasterSlaveAdapterInterface
 {
     /**
      * @return Zend\Db\Adapter

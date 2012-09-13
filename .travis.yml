@@ -12,4 +12,4 @@ before_install:
  - cd tests; git clone https://github.com/zendframework/zf2.git
 
 script:
- - phpunit
+ - phpunit -c test/phpunit.xml
