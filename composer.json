@@ -24,7 +24,7 @@
     },
     "autoload": {
         "psr-0": {
-            "ZfcUser": "src/"
+            "ZfcBase": "src/"
         },
         "classmap": [
             "./Module.php"
