@@ -23,7 +23,7 @@ abstract class AbstractModule implements
     {
         $sharedManager = $moduleManager->getEventManager()->getSharedManager();
         $instance = $this;//TODO this will no be needed in PHP 5.4
-        $sharedManager->attach('application', 'bootstrap', function($e) use ($instance, $moduleManager) {
+        $sharedManager->attach('Zend\Mvc\Application', 'bootstrap', function($e) use ($instance, $moduleManager) {
             $app = $e->getParam('application');
             $instance->setMergedConfig($app->getConfig());
             $instance->bootstrap($moduleManager, $app);
