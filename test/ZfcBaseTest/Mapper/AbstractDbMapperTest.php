@@ -2,12 +2,11 @@
 namespace ZfcBaseTest\Mapper;
 
 use PHPUnit_Framework_TestCase;
-use ZfcBaseTest\Bootstrap;
 use Zend\Db\Adapter\Adapter;
 use ZfcBase\Db\Adapter\MasterSlaveAdapter;
 use ZfcBaseTest\Mapper\TestAsset\TestMapper;
 
-class ProvidesEventsFormTest extends PHPUnit_Framework_TestCase
+class AbstractDbMapperTest extends PHPUnit_Framework_TestCase
 {
     public function setup()
     {
@@ -18,7 +17,7 @@ class ProvidesEventsFormTest extends PHPUnit_Framework_TestCase
         $this->mockPlatform = $this->getMock('Zend\Db\Adapter\Platform\PlatformInterface');
         $this->mockStatement = $this->getMock('Zend\Db\Adapter\Driver\StatementInterface');
         $this->mockDriver->expects($this->any())->method('createStatement')->will($this->returnValue($this->mockStatement));
-        
+
         $this->adapter = new Adapter($this->mockDriver, $this->mockPlatform);
         $this->masterSlaveAdapter = new MasterSlaveAdapter($this->adapter, $this->mockDriver, $this->mockPlatform);
     }
@@ -34,7 +33,7 @@ class ProvidesEventsFormTest extends PHPUnit_Framework_TestCase
         $this->assertSame($newAdapter, $this->mapper->getDbSlaveAdapter());
         unset($this->mapper);
     }
-    
+
     public function testSetMasterSlaveDbAdapterSetterAndGettersAlsoWorksAsExpected()
     {
         $this->mapper = new TestMapper;
