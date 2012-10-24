@@ -97,7 +97,7 @@ abstract class AbstractDbMapper extends EventProvider
     protected function getSelect($table = null)
     {
         $this->initialize();
-        return $this->getSlaveSql()->select($table);
+        return $this->getSlaveSql()->select($table ?: $this->getTableName());
     }
 
     /**
