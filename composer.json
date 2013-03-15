@@ -20,7 +20,13 @@
     ],
     "require": {
         "php": ">=5.3.3",
-        "zendframework/zendframework": "2.1.*"
+        "zendframework/zend-db": "2.1.*",
+        "zendframework/zend-eventmanager": "2.1.*",
+        "zendframework/zend-loader": "2.1.*",
+        "zendframework/zend-modulemanager": "2.1.*",
+        "zendframework/zend-mvc": "2.1.*",
+        "zendframework/zend-servicemanager": "2.1.*",
+        "zendframework/zend-stdlib": "2.1.*"
     },
     "autoload": {
         "psr-0": {
@@ -29,5 +35,11 @@
         "classmap": [
             "./Module.php"
         ]
-    }
+    },
+    "repositories": [
+        {
+            "type": "composer",
+            "url": "https://packages.zendframework.com/"
+        }
+    ]
 }
