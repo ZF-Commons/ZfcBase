@@ -35,5 +35,11 @@
         "classmap": [
             "./Module.php"
         ]
-    }
+    },
+    "repositories": [
+        {
+            "type": "composer",
+            "url": "https://packages.zendframework.com/"
+        }
+    ]
 }
