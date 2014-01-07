@@ -2,6 +2,7 @@
 
 namespace ZfcBase\Form;
 
+use Traversable;
 use Zend\Form\Form;
 use Zend\EventManager\EventManagerInterface;
 use Zend\EventManager\EventManager;
