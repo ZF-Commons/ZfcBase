@@ -3,6 +3,7 @@
 namespace ZfcBase\Module;
 
 use InvalidArgumentException;
+use Zend\Config\Config;
 use Zend\EventManager\EventInterface as Event;
 use Zend\EventManager\StaticEventManager;
 use Zend\ModuleManager\Feature\AutoloaderProviderInterface;
@@ -120,7 +121,7 @@ abstract class AbstractModule implements
         $currOption = array_shift($option);
         //we need this fix to accept both array/ZendConfig -- there is know problem with offsetExists() in PHP
         //if(array_key_exists($currOption, $options)) {
-        if(array_key_exists($currOption, $options) || ($options instanceof \Zend\Config\Config && $options->offsetExists($currOption))) {
+        if(array_key_exists($currOption, $options) || ($options instanceof Config && $options->offsetExists($currOption))) {
             if(count($option) >= 1) {
                 return $this->getOptionFromArray($options[$currOption], $option, $default, $origOption);
             }
