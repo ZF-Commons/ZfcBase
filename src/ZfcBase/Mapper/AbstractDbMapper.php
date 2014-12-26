@@ -67,6 +67,7 @@ abstract class AbstractDbMapper extends EventProvider
 
     /**
      * Performs some basic initialization setup and checks before running a query
+     * @throws \Exception
      * @return null
      */
     protected function initialize()
@@ -92,7 +93,7 @@ abstract class AbstractDbMapper extends EventProvider
 
     /**
      * @param string|null $table
-     * return Select
+     * @return Select
      */
     protected function getSelect($table = null)
     {
@@ -143,7 +144,7 @@ abstract class AbstractDbMapper extends EventProvider
 
     /**
      * @param object|array $entity
-     * @param string|array|closure $where
+     * @param string|array|\Closure $where
      * @param string|TableIdentifier|null $tableName
      * @param HydratorInterface|null $hydrator
      * @return ResultInterface
@@ -166,7 +167,7 @@ abstract class AbstractDbMapper extends EventProvider
     }
 
     /**
-     * @param string|array|closure $where
+     * @param string|array|\Closure $where
      * @param string|TableIdentifier|null $tableName
      * @return ResultInterface
      */
@@ -201,7 +202,7 @@ abstract class AbstractDbMapper extends EventProvider
     }
 
     /**
-     * @param object $modelPrototype
+     * @param object $entityPrototype
      * @return AbstractDbMapper
      */
     public function setEntityPrototype($entityPrototype)
@@ -241,7 +242,7 @@ abstract class AbstractDbMapper extends EventProvider
     }
 
     /**
-     * @param Adapter $dbAdapter
+     * @param Adapter $dbSlaveAdapter
      * @return AbstractDbMapper
      */
     public function setDbSlaveAdapter(Adapter $dbSlaveAdapter)
@@ -285,7 +286,7 @@ abstract class AbstractDbMapper extends EventProvider
     }
 
     /**
-     * @param Sql
+     * @param Sql $sql
      * @return AbstractDbMapper
      */
     protected function setSql(Sql $sql)
@@ -307,7 +308,7 @@ abstract class AbstractDbMapper extends EventProvider
     }
 
     /**
-     * @param Sql
+     * @param Sql $sql
      * @return AbstractDbMapper
      */
     protected function setSlaveSql(Sql $sql)
@@ -322,6 +323,7 @@ abstract class AbstractDbMapper extends EventProvider
      * Use this method to ensure that you're working with an array.
      *
      * @param object $entity
+     * @param HydratorInterface|null $hydrator
      * @return array
      */
     protected function entityToArray($entity, HydratorInterface $hydrator = null)
